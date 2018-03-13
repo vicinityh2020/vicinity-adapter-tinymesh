@@ -1,7 +1,6 @@
 package com.tinymesh.vicinity.adapter.api;
 
-import com.tinymesh.vicinity.adapter.model.ExecActionPayload;
-import com.tinymesh.vicinity.adapter.model.SetPropertyValue;
+import com.tinymesh.vicinity.adapter.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,13 +15,14 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.util.*;
 
-import com.tinymesh.vicinity.adapter.model.ObjectInfo;
-import com.tinymesh.vicinity.adapter.model.PropertyValue;
-
 @RestController
 public class ObjectsApiController {
 
     private static Map<UUID, ObjectInfo> objects = new HashMap<>();
+
+    public Map getHashmapObjects(){
+        return objects;
+    }
 
     public ObjectsApiController() {
         if (objects.isEmpty()) {
@@ -40,6 +40,19 @@ public class ObjectsApiController {
                 obj.setOid(oid);
                 obj.setType("door-state");
                 obj.setName("Door - " + i);
+
+                OutputSchema output = new OutputSchema();
+                output.setDatatype("boolean");
+                output.setUnits("occupancy");
+                List<ObjectProperty> props = new ArrayList<>();
+
+                ObjectProperty prop = new ObjectProperty();
+                prop.pid("state");
+                prop.setOutput(output);
+                props.add(prop);
+
+                obj.setProperties(props);
+
                 objects.put(oid, obj);
                 i++;
             }
