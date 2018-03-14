@@ -1,25 +1,34 @@
-package com.tinymesh.vicinity.adapter.database;
+package com.tinymesh.vicinity.adapter.model;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 
-@Entity
-@Table(name = "device")
+//@Entity
+//@Table(name = "device")
 public class Device {
-
-    private boolean state;
-    @Id
-    @GeneratedValue
-    private UUID uuid;
     private String deviceType;
-    private String url;
+    private UUID uuid;
     private LocalDateTime dateTime;
+    private boolean state;
+    private String url;
+
+
+
+
+   // @Id
+   // @GeneratedValue
+
+
+    public Device(String deviceType, UUID uuid, LocalDateTime dateTime, boolean state, String url){
+        this.uuid = uuid;
+        this.dateTime = dateTime;
+        this.deviceType = deviceType;
+        this.state = state;
+        this.url = url;
+    }
+    public Device(){}
 
     public boolean isState() {
         return state;
@@ -36,7 +45,6 @@ public class Device {
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
-
     public String getDeviceType() {
         return deviceType;
     }
@@ -59,5 +67,8 @@ public class Device {
 
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
+    }
+    public String toString(){
+        return "Device [DeviceType=" + deviceType + ", uuid ="+ uuid + ", Date=" + dateTime + ", State=" + state + ", URL=" + url + "]";
     }
 }

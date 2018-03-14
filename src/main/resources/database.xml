@@ -17,6 +17,6 @@
 		<!-- Drop and re-create the database schema on startup -->
 		<property name="hbm2ddl.auto">create</property>
 		<!-- MAPPINGS -->
-		<mapping class="com.tinymesh.vicinity.adapter.database.Device"/>
+		<mapping class="com.tinymesh.vicinity.adapter.model.Device"/>
 	</session-factory>
 </hibernate-configuration>

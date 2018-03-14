@@ -1,17 +1,9 @@
 package com.tinymesh.vicinity.adapter.api;
 
 import com.tinymesh.vicinity.adapter.model.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.http.HttpStatus;
-
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 
 import java.util.*;
 
@@ -58,7 +50,6 @@ public class ObjectsApiController {
             }
         }
     }
-
 
     @RequestMapping(value = "/objects", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<ObjectInfo>> getObjects() {
