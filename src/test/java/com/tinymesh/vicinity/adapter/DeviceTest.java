@@ -11,10 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static org.hamcrest.Matchers.samePropertyValuesAs;
+import static org.junit.Assert.assertThat;
+
 public class DeviceTest {
 
     @ElementCollection
-    List<Device> deviceList =  new ArrayList<>();
+    private List<Device> deviceList =  new ArrayList<>();
 
 
     @Before
@@ -28,6 +31,9 @@ public class DeviceTest {
         deviceList.add(new Device("Device1", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"));
         DeviceDataHandler deviceDataHandler = new DeviceDataHandler();
         deviceDataHandler.setData(deviceList);
-//        deviceDataHandler.retrive();
+        List<Device> retrievedDevices = deviceDataHandler.retrieveData();
+
+        assertThat(deviceList, samePropertyValuesAs(retrievedDevices));
+        //deviceDataHandler.retrieveData();
     }
 }

@@ -11,9 +11,14 @@ import java.util.List;
 
 
 public class DeviceDataHandler {
+    private static DeviceDataHandler deviceDataHandler;
 
-    Session session;
-    Transaction transaction;
+    private Session session;
+    private Transaction transaction;
+
+    private SessionFactory sessionFactory = new Configuration()
+            .configure("database.xml")
+            .buildSessionFactory();
     //private Device device1 = new Device("Device1", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
    // private Device device2 = new Device("Device2", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com");
 
@@ -21,9 +26,7 @@ public class DeviceDataHandler {
     public void setData(List<Device> deviceList){
 
 
-        SessionFactory sessionFactory = new Configuration()
-                .configure("database.xml")
-                .buildSessionFactory();
+
 
         try{
             session = sessionFactory.openSession();
@@ -41,22 +44,18 @@ public class DeviceDataHandler {
             session.close();
         }
         //closing the sessionFactory
-        sessionFactory.close();
     }
-    public void retrieveData(){
-        SessionFactory sessionFactory = new Configuration()
-                .configure("database.xml")
-                .buildSessionFactory();
-        try {
+    public List<Device> retrieveData(){
+
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            Query query = session.createQuery("FROM device");
+            Query query = session.createQuery("FROM Device");
+            List<Device> list = query.list();
+            transaction.commit();
+            System.out.println(list);
 
-        }catch (Exception e){
-
-        }finally {
-            session.close();
-        }
+           session.close();
+            return list;
 
     }
 }

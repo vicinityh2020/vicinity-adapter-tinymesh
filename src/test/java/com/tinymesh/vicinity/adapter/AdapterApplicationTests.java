@@ -1,9 +1,7 @@
 package com.tinymesh.vicinity.adapter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tinymesh.vicinity.adapter.api.ObjectsApiController;
-import com.tinymesh.vicinity.adapter.model.ObjectProperty;
-import org.json.JSONObject;
+import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
+import com.tinymesh.vicinity.adapter.model.Device;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,28 +12,28 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.samePropertyValuesAs;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @WebAppConfiguration
 @AutoConfigureMockMvc
 public class AdapterApplicationTests {
+
 
 	private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
 			MediaType.APPLICATION_JSON.getSubtype(),
@@ -64,27 +62,18 @@ public class AdapterApplicationTests {
 
 	@Test
 	public void getAllObjects() throws Exception {
-		System.out.print(mockMvc);
-		mockMvc.perform(get("/objects"))
+		//@ElementCollection
+		List<Device> deviceList =  new ArrayList<>();
+		deviceList.add(new Device("Device1", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"));
+		DeviceDataHandler deviceDataHandler = new DeviceDataHandler();
+		deviceDataHandler.setData(deviceList);
+		List<Device> retrievedDevices = deviceDataHandler.retrieveData();
+		//assertThat(deviceList, samePropertyValuesAs(retrievedDevices));
+
+        mockMvc.perform(get("/objects"))
 				.andExpect(status().isOk());
-		ObjectsApiController obj = new ObjectsApiController();
 
-        System.out.println(obj.getHashmapObjects());
-
-
-
-			//	.andExpect(jsonPath("$", hasSize(5)));
-			//	.andExpect(jsonPath("$", hasSize(5)));
-        /*
-        try{
-            URL url = new URL("");
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-
-        }catch (MalformedURLException e){
-            e.printStackTrace();
-        }
-        */
+		assertThat(deviceList, samePropertyValuesAs(retrievedDevices));
 	}
 
 }
