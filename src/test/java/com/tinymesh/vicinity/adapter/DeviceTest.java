@@ -1,6 +1,6 @@
 package com.tinymesh.vicinity.adapter;
 
-import com.tinymesh.vicinity.adapter.database.SetDataToDevice;
+import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
 import com.tinymesh.vicinity.adapter.model.Device;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,13 +26,8 @@ public class DeviceTest {
 
 
         deviceList.add(new Device("Device1", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"));
-        SetDataToDevice setDataToDevice = new SetDataToDevice();
-        setDataToDevice.setData(deviceList);
-//        setDataToDevice.retrive();
+        DeviceDataHandler deviceDataHandler = new DeviceDataHandler();
+        deviceDataHandler.setData(deviceList);
+//        deviceDataHandler.retrive();
     }
-   /* @Test
-    public void testAssertTrue(){
-        assertTrue("fail", true);
-    }
-    */
 }
