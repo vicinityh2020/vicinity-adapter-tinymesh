@@ -1,24 +1,24 @@
 package com.tinymesh.vicinity.adapter.model;
 
 
+import org.springframework.boot.autoconfigure.web.ResourceProperties;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 
-//@Entity
-//@Table(name = "device")
+@Entity
+@Table(name = "device")
 public class Device {
+    private boolean state;
+     @Id
+     @GeneratedValue(strategy=GenerationType.AUTO)
     private String deviceType;
     private UUID uuid;
     private LocalDateTime dateTime;
-    private boolean state;
     private String url;
 
-
-
-
-   // @Id
-   // @GeneratedValue
 
 
     public Device(String deviceType, UUID uuid, LocalDateTime dateTime, boolean state, String url){
