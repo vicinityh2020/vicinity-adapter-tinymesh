@@ -1,7 +1,6 @@
 package com.tinymesh.vicinity.adapter.model;
 
-
-import org.springframework.boot.autoconfigure.web.ResourceProperties;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,7 +12,7 @@ import java.util.UUID;
 public class Device {
     private boolean state;
      @Id
-     @GeneratedValue(strategy=GenerationType.AUTO)
+     @GenericGenerator(name="system-uuid", strategy="uuid")
     private String deviceType;
     private UUID uuid;
     private LocalDateTime dateTime;

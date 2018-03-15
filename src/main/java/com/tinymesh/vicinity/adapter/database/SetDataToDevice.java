@@ -6,10 +6,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
-import javax.persistence.ElementCollection;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -20,22 +18,17 @@ public class SetDataToDevice {
     private Device device1 = new Device("Device1", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
     private Device device2 = new Device("Device2", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com");
 
-    @ElementCollection
-    Collection<Device> deviceList = new ArrayList<>();
+   // @ElementCollection
+    //Collection<Device> deviceList = new ArrayList<>();
 
-    public void setData(){
-        deviceList.add(new Device("Device1", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"));
+    public void setData(List<Device> deviceList){
+      //  deviceList.add(new Device("Device1", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"));
 
 
         SessionFactory sessionFactory = new Configuration()
                 .configure("database.xml")
                 .buildSessionFactory();
-//        session.beginTransaction();
 
-    //    for(Device device : deviceList) {
-            session.save(deviceList);
-            session.getTransaction().commit();
-      //  }
         /*
 
         StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
@@ -61,6 +54,14 @@ public class SetDataToDevice {
 
 */
         try{
+
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+//        session.beginTransaction();
+
+            for(Device device : deviceList) {
+                session.save(device);
+                session.getTransaction().commit(); }
 
             System.out.println("Device name is set!");
         }catch (Exception e){
