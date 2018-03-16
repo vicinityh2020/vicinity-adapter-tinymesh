@@ -51,6 +51,22 @@ public class ObjectsApiController {
         }
     }
 
+    public List<ObjectInfo> mapDataToObjectInfo(List<Device> deviceList){
+
+
+        List<ObjectInfo> items = new ArrayList<>();
+        for(Device device : deviceList) {
+            ObjectInfo objectInfo = new ObjectInfo();
+
+
+            objectInfo.setName(device.getDeviceName());
+            objectInfo.setType(device.getDeviceType());
+            objectInfo.setOid(device.getUuid());
+            items.add(objectInfo);
+        }
+        return items;
+    }
+
     @RequestMapping(value = "/objects", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<ObjectInfo>> getObjects() {
         List<ObjectInfo> objectList = new ArrayList<>(objects.values());
@@ -76,4 +92,6 @@ public class ObjectsApiController {
     public ResponseEntity<PropertyValue> executeObjectAction(@PathVariable UUID oid, @PathVariable String aid) {
         return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_IMPLEMENTED);
     }
+
+
 }

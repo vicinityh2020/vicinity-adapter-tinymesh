@@ -11,7 +11,7 @@ import java.util.List;
 
 
 public class DeviceDataHandler {
-    private static DeviceDataHandler deviceDataHandler;
+    //private static DeviceDataHandler deviceDataHandler;
 
     private Session session;
     private Transaction transaction;
@@ -25,16 +25,13 @@ public class DeviceDataHandler {
 
     public void setData(List<Device> deviceList){
 
-
-
-
         try{
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
 
             for(Device device : deviceList) {
-                session.save(device);
-                session.getTransaction().commit(); }
+                session.save(device); }
+            session.getTransaction().commit();
 
             System.out.println("Device name is set!");
         }catch (Exception e){

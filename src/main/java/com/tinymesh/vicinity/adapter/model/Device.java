@@ -10,9 +10,11 @@ import java.util.UUID;
 @Entity
 @Table(name = "device")
 public class Device {
+
     private boolean state;
-     @Id
-     @GenericGenerator(name="system-uuid", strategy="uuid")
+    @Id
+    @GenericGenerator(name="system-uuid", strategy="uuid")
+    private String deviceName;
     private String deviceType;
     private UUID uuid;
     private LocalDateTime dateTime;
@@ -20,7 +22,8 @@ public class Device {
 
 
 
-    public Device(String deviceType, UUID uuid, LocalDateTime dateTime, boolean state, String url){
+    public Device(String deviceName, String deviceType, UUID uuid, LocalDateTime dateTime, boolean state, String url){
+        this.deviceName = deviceName;
         this.uuid = uuid;
         this.dateTime = dateTime;
         this.deviceType = deviceType;
@@ -28,6 +31,15 @@ public class Device {
         this.url = url;
     }
     public Device(){}
+
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
+    }
 
     public boolean isState() {
         return state;

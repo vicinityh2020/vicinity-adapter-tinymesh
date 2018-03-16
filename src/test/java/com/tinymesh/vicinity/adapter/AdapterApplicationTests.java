@@ -14,6 +14,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
@@ -64,7 +66,7 @@ public class AdapterApplicationTests {
 	public void getAllObjects() throws Exception {
 		//@ElementCollection
 		List<Device> deviceList =  new ArrayList<>();
-		deviceList.add(new Device("Device1", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"));
+		deviceList.add(new Device("Device1","Device1", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"));
 		DeviceDataHandler deviceDataHandler = new DeviceDataHandler();
 		deviceDataHandler.setData(deviceList);
 		List<Device> retrievedDevices = deviceDataHandler.retrieveData();
@@ -74,6 +76,17 @@ public class AdapterApplicationTests {
 				.andExpect(status().isOk());
 
 		assertThat(deviceList, samePropertyValuesAs(retrievedDevices));
+	}
+
+	private DeviceDataHandler deviceDataHandler;
+	@Test
+	@ResponseBody
+	public List<Device> getJsonData(@PathVariable String id){
+
+		//@RequestMapping("{id}/device")
+
+
+				return deviceDataHandler.retrieveData();
 	}
 
 }
