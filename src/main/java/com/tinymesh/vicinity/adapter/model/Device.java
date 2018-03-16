@@ -14,9 +14,9 @@ public class Device {
     private boolean state;
     @Id
     @GenericGenerator(name="system-uuid", strategy="uuid")
+    private UUID uuid;
     private String deviceName;
     private String deviceType;
-    private UUID uuid;
     private LocalDateTime dateTime;
     private String url;
 

@@ -1,9 +1,12 @@
 package com.tinymesh.vicinity.adapter.api;
 
+import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
 import com.tinymesh.vicinity.adapter.model.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.*;
 
@@ -16,65 +19,64 @@ public class ObjectsApiController {
         return objects;
     }
 
-    public ObjectsApiController() {
-        if (objects.isEmpty()) {
-            UUID[] uuids = {
-                UUID.fromString("c23bf592-9885-4572-90fe-bc9f68bcecdb"),
-                UUID.fromString("b44aec7a-1108-4ff9-bc75-46b6d41d653b"),
-                UUID.fromString("901a9f17-7b74-4e44-9eb1-8ce6330c781c"),
-                UUID.fromString("04541225-c518-4dec-841f-484ce425550d"),
-                UUID.fromString("69705746-91ba-493b-9158-3bb9e7e228b3")
-            };
-
-            int i = 1;
-            for ( UUID oid : uuids) {
-                ObjectInfo obj = new ObjectInfo();
-                obj.setOid(oid);
-                obj.setType("door-state");
-                obj.setName("Door - " + i);
-
-                OutputSchema output = new OutputSchema();
-                output.setDatatype("boolean");
-                output.setUnits("occupancy");
-                List<ObjectProperty> props = new ArrayList<>();
-
-                ObjectProperty prop = new ObjectProperty();
-                prop.pid("state");
-                prop.setOutput(output);
-                props.add(prop);
-
-                obj.setProperties(props);
-
-                objects.put(oid, obj);
-                i++;
-            }
-        }
-    }
-
-    public List<ObjectInfo> mapDataToObjectInfo(List<Device> deviceList){
-
-
+    public static List<ObjectInfo> mapDataToObjectInfo(List<Device> deviceList){
         List<ObjectInfo> items = new ArrayList<>();
+
         for(Device device : deviceList) {
             ObjectInfo objectInfo = new ObjectInfo();
 
+            List<ObjectProperty> objectProperties = new ArrayList<>();
 
+            objectInfo.setOid(device.getUuid());
             objectInfo.setName(device.getDeviceName());
             objectInfo.setType(device.getDeviceType());
-            objectInfo.setOid(device.getUuid());
+            objectInfo.setActions(new ArrayList<>());
+            objectInfo.setEvents(new ArrayList<>());
+
+            LinkInfo linkInfo = new LinkInfo();
+            linkInfo.setHref("properties/state");
+            linkInfo.setMediaType("application/json");
+            OutputSchema outputSchema = new OutputSchema();
+            outputSchema.setDatatype("boolean");
+            outputSchema.setUnits("occupancy");
+            ObjectProperty prop = new ObjectProperty();
+            prop.setPid("state");
+            prop.setWritable(false);
+            prop.setMonitors("occupancy");
+            prop.addReadLinksItem(linkInfo);
+            prop.setWriteLinks(new ArrayList<>());
+            prop.setOutput(outputSchema);
+            objectProperties.add(prop);
+
+            objectInfo.properties(objectProperties);
+
             items.add(objectInfo);
         }
+
         return items;
     }
 
     @RequestMapping(value = "/objects", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<ObjectInfo>> getObjects() {
-        List<ObjectInfo> objectList = new ArrayList<>(objects.values());
+
+
+        List<ObjectInfo> objectList;
+        DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
+        List<Device> deviceList = deviceDataHandler.retrieveData();
+            objectList = mapDataToObjectInfo(deviceList);
         return new ResponseEntity<>(objectList, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/objects/{oid}/properties/{pid}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<PropertyValue> getObjectProperty(@PathVariable UUID oid, @PathVariable String pid) {
+    public ResponseEntity<PropertyValue> getObjectProperty(@PathVariable UUID oid, @PathVariable String pid) throws HttpClientErrorException{
+    try{
+        if(pid.equals("state")) {
+
+            return new ResponseEntity<>(new PropertyValue(), HttpStatus.OK);
+        }
+        }catch(HttpServerErrorException e){
+            e.printStackTrace();
+        }
         return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_IMPLEMENTED);
     }
 

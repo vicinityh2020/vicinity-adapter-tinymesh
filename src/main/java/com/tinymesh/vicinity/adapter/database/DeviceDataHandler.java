@@ -11,16 +11,18 @@ import java.util.List;
 
 
 public class DeviceDataHandler {
-    //private static DeviceDataHandler deviceDataHandler;
+    private static DeviceDataHandler deviceDataHandler;
 
     private Session session;
     private Transaction transaction;
+    private DeviceDataHandler(){}
 
     private SessionFactory sessionFactory = new Configuration()
             .configure("database.xml")
             .buildSessionFactory();
     //private Device device1 = new Device("Device1", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
    // private Device device2 = new Device("Device2", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com");
+
 
 
     public void setData(List<Device> deviceList){
@@ -54,5 +56,12 @@ public class DeviceDataHandler {
            session.close();
             return list;
 
+    }
+    public static DeviceDataHandler getInstance(){
+
+        if (deviceDataHandler == null) {
+            deviceDataHandler = new DeviceDataHandler();
+        }
+        return deviceDataHandler;
     }
 }

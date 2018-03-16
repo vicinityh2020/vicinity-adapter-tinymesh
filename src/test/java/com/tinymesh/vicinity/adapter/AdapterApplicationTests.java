@@ -1,5 +1,6 @@
 package com.tinymesh.vicinity.adapter;
 
+import com.tinymesh.vicinity.adapter.api.ObjectsApiController;
 import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
 import com.tinymesh.vicinity.adapter.model.Device;
 import org.junit.Before;
@@ -14,8 +15,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
@@ -26,9 +25,11 @@ import java.util.UUID;
 
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -64,29 +65,28 @@ public class AdapterApplicationTests {
 
 	@Test
 	public void getAllObjects() throws Exception {
-		//@ElementCollection
 		List<Device> deviceList =  new ArrayList<>();
 		deviceList.add(new Device("Device1","Device1", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"));
-		DeviceDataHandler deviceDataHandler = new DeviceDataHandler();
+		DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
 		deviceDataHandler.setData(deviceList);
-		List<Device> retrievedDevices = deviceDataHandler.retrieveData();
-		//assertThat(deviceList, samePropertyValuesAs(retrievedDevices));
 
         mockMvc.perform(get("/objects"))
-				.andExpect(status().isOk());
-
-		assertThat(deviceList, samePropertyValuesAs(retrievedDevices));
+				.andExpect(status().isOk())
+                .andExpect(jsonPath("$", samePropertyValuesAs(ObjectsApiController.mapDataToObjectInfo(deviceList))))
+                .andDo(print());
 	}
-
-	private DeviceDataHandler deviceDataHandler;
 	@Test
-	@ResponseBody
-	public List<Device> getJsonData(@PathVariable String id){
+    public void readProperty() throws Exception{
+        List<Device> deviceList =  new ArrayList<>();
+        deviceList.add(new Device("Device1","Device1", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"));
+        DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
+        deviceDataHandler.setData(deviceList);
+        Device device = new Device("Device1","Device1", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
+        String uuid = device.getUuid().toString();
 
-		//@RequestMapping("{id}/device")
 
-
-				return deviceDataHandler.retrieveData();
-	}
-
+        mockMvc.perform(get("/objects/{uuid}/properties/NOT_FOUND").param("uuid", uuid))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
 }

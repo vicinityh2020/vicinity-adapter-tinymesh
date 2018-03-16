@@ -33,7 +33,7 @@ public class DeviceTest {
 
         deviceList.add(new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"));
         deviceList.add(new Device("Device2","Sensor", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com"));
-        DeviceDataHandler deviceDataHandler = new DeviceDataHandler();
+        DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
         deviceDataHandler.setData(deviceList);
        // List<Device> retrievedDevices = deviceDataHandler.retrieveData();
 
@@ -41,11 +41,13 @@ public class DeviceTest {
         List<ObjectInfo> objectInfoList = objectsApiController.mapDataToObjectInfo(deviceList);
         Device fstDevice = deviceList.get(1);
         ObjectInfo fstObjInfo = objectInfoList.get(1);
+        ObjectsApiController objectsApiController = new ObjectsApiController();
 
         assertEquals(fstDevice.getDeviceName(), fstObjInfo.getName());
         assertEquals(fstDevice.getDeviceType(), fstObjInfo.getType());
         assertEquals(fstDevice.getUuid(), fstObjInfo.getOid());
 
+        assertEquals(deviceDataHandler,objectsApiController);
         //deviceDataHandler.retrieveData();
     }
 }
