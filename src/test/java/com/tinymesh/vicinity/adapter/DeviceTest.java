@@ -47,7 +47,7 @@ public class DeviceTest {
         assertEquals(fstDevice.getDeviceType(), fstObjInfo.getType());
         assertEquals(fstDevice.getUuid(), fstObjInfo.getOid());
 
-        assertEquals(deviceDataHandler,objectsApiController);
+        // assertEquals(deviceDataHandler,objectsApiController);
         //deviceDataHandler.retrieveData();
     }
 }

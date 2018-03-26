@@ -70,9 +70,11 @@ public class ObjectsApiController {
     @RequestMapping(value = "/objects/{oid}/properties/{pid}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<PropertyValue> getObjectProperty(@PathVariable UUID oid, @PathVariable String pid) throws HttpClientErrorException{
     try{
-        if(pid.equals("state")) {
+        if(pid.equals("getState")) {
 
             return new ResponseEntity<>(new PropertyValue(), HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_FOUND);
         }
         }catch(HttpServerErrorException e){
             e.printStackTrace();
@@ -82,18 +84,46 @@ public class ObjectsApiController {
 
     @RequestMapping(value = "/objects/{oid}/properties/{pid}", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")
     public ResponseEntity<PropertyValue> setObjectProperty(@PathVariable UUID oid, @PathVariable String pid, @RequestBody SetPropertyValue body) {
+        try{
+            if(pid.equals("setState")) {
+
+                return new ResponseEntity<>(new PropertyValue(), HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_FOUND);
+            }
+        }catch(HttpServerErrorException e){
+            e.printStackTrace();
+        }
         return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_IMPLEMENTED);
     }
 
     @RequestMapping(value = "/objects/{oid}/actions/{aid}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<PropertyValue> getObjectActionStatus(@PathVariable UUID oid, @PathVariable String aid, @RequestBody ExecActionPayload body) {
+        try {
+            if (aid.equals("getAction")) {
+                return new ResponseEntity<>(new PropertyValue(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_FOUND);
+            }
+        } catch (HttpServerErrorException e) {
+            e.printStackTrace();
+        }
         return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_IMPLEMENTED);
     }
+
 
     @RequestMapping(value = "/objects/{oid}/actions/{aid}", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")
     public ResponseEntity<PropertyValue> executeObjectAction(@PathVariable UUID oid, @PathVariable String aid) {
+        try {
+            if (aid.equals("putAction")) {
+
+                return new ResponseEntity<>(new PropertyValue(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_FOUND);
+            }
+        } catch (HttpServerErrorException e) {
+            e.printStackTrace();
+        }
         return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_IMPLEMENTED);
     }
-
-
 }

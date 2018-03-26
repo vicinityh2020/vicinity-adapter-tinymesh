@@ -1,5 +1,6 @@
 package com.tinymesh.vicinity.adapter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tinymesh.vicinity.adapter.api.ObjectsApiController;
 import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
 import com.tinymesh.vicinity.adapter.model.Device;
@@ -15,17 +16,20 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,11 +40,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @AutoConfigureMockMvc
 public class AdapterApplicationTests {
-
-
-	private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
-			MediaType.APPLICATION_JSON.getSubtype(),
-			Charset.forName("utf8"));
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -63,6 +62,7 @@ public class AdapterApplicationTests {
 	public void setup() {
 	}
 
+	//Testing if object has same values as Device
 	@Test
 	public void getAllObjects() throws Exception {
 		List<Device> deviceList =  new ArrayList<>();
@@ -75,18 +75,152 @@ public class AdapterApplicationTests {
                 .andExpect(jsonPath("$", samePropertyValuesAs(ObjectsApiController.mapDataToObjectInfo(deviceList))))
                 .andDo(print());
 	}
+
+	//Testing GET from property
 	@Test
     public void readProperty() throws Exception{
-        List<Device> deviceList =  new ArrayList<>();
-        deviceList.add(new Device("Device1","Device1", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"));
+		checkGetStatusOK();
+		checkGetStatusNOT_FOUND();
+    }
+
+    //Testing PUT to properties
+    @Test
+	public void setProperty() throws Exception{
+		checkSetStatusOK();
+		checkGetStatusNOT_FOUND();
+	}
+
+    //Testing PUT to actions
+    @Test
+    public void setAction() throws Exception{
+	    checkPutActionStatusOK();
+	    checkPutActionStatusNOT_FOUND();
+    }
+
+	//Checking if status OK when we GET from Object Property
+    public void checkGetStatusOK() throws Exception{
+		List<Device> deviceList = Stream.of(
+				new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"),
+				new Device("Device2","Sensor2", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com"))
+				.collect(Collectors.toList());
+		DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
+		deviceDataHandler.setData(deviceList);
+
+		mockMvc.perform(get("/objects/{uuid}/properties/getState", deviceList.get(0).getUuid()))    //).param("uuid", uuid.toString()))
+				.andExpect(status().isOk())
+				.andDo(print());
+	}
+
+	//Checking if Status NOT FOUND when we GET with wrong pid from Object Property
+	public void checkGetStatusNOT_FOUND() throws Exception{
+		List<Device> deviceList = Stream.of(
+				new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"),
+				new Device("Device2","Sensor2", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com"))
+				.collect(Collectors.toList());
+		DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
+		deviceDataHandler.setData(deviceList);
+
+		mockMvc.perform(get("/objects/{uuid}/properties/NOT_FOUND", deviceList.get(0).getUuid()))    //).param("uuid", uuid.toString()))
+				.andExpect(status().isNotFound())
+				.andDo(print());
+	}
+
+	//Checking Status is OK, when we PUT to Object Property
+	public void checkSetStatusOK() throws Exception {
+
+        Device device = new Device("Device1", "Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(device);
+
+        MediaType MEDIA_TYPE_JSON_UTF8 = new MediaType("application", "json", java.nio.charset.Charset.forName("UTF-8"));
+        MockHttpServletRequestBuilder request = put("/objects/{uuid}/properties/setState", device.getUuid());
+
+        request.content(json);
+        request.accept(MEDIA_TYPE_JSON_UTF8);
+        request.contentType(MEDIA_TYPE_JSON_UTF8);
+
+        mockMvc.perform(request)
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+        //Testing if Status NOT FOUND when we PUT with wrong pid to Object Property
+        public void checkSetStatusNOT_FOUND () throws Exception {
+
+            Device device = new Device("Device1", "Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
+
+            ObjectMapper mapper = new ObjectMapper();
+            String json = mapper.writeValueAsString(device);
+
+            MediaType MEDIA_TYPE_JSON_UTF8 = new MediaType("application", "json", java.nio.charset.Charset.forName("UTF-8"));
+            MockHttpServletRequestBuilder request = put("/objects/{uuid}/properties/NOT_FOUND", device.getUuid());
+
+            request.content(json);
+            request.accept(MEDIA_TYPE_JSON_UTF8);
+            request.contentType(MEDIA_TYPE_JSON_UTF8);
+
+            mockMvc.perform(request)
+                    .andDo(print())
+                    .andExpect(status().isNotFound());
+
+    }
+
+    /*
+    //Checking Status is OK, when we GET from Action
+    @Test
+    public void checkGetActionStatusOK () throws Exception {
+
+        List<Device> deviceList = Stream.of(
+                new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"),
+                new Device("Device2","Sensor2", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com"))
+                .collect(Collectors.toList());
         DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
         deviceDataHandler.setData(deviceList);
-        Device device = new Device("Device1","Device1", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
-        String uuid = device.getUuid().toString();
 
-
-        mockMvc.perform(get("/objects/{uuid}/properties/NOT_FOUND").param("uuid", uuid))
-                .andExpect(status().isNotFound())
+        mockMvc.perform(get("/objects/{uuid}/actions/getAction", deviceList.get(0).getUuid()))
+                .andExpect(status().isOk())
                 .andDo(print());
+    }
+
+    */
+    //Checking Status is OK, when we PUT to Action
+    public void checkPutActionStatusOK() throws Exception {
+
+        Device device = new Device("Device1", "Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(device);
+
+        MediaType MEDIA_TYPE_JSON_UTF8 = new MediaType("application", "json", java.nio.charset.Charset.forName("UTF-8"));
+        MockHttpServletRequestBuilder request = put("/objects/{uuid}/actions/putAction", device.getUuid());
+
+        request.content(json);
+        request.accept(MEDIA_TYPE_JSON_UTF8);
+        request.contentType(MEDIA_TYPE_JSON_UTF8);
+
+        mockMvc.perform(request)
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    //Testing if Status NOT FOUND when we PUT with wrong aid to Action
+    public void checkPutActionStatusNOT_FOUND() throws Exception {
+
+        Device device = new Device("Device1", "Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(device);
+
+        MediaType MEDIA_TYPE_JSON_UTF8 = new MediaType("application", "json", java.nio.charset.Charset.forName("UTF-8"));
+        MockHttpServletRequestBuilder request = put("/objects/{uuid}/actions/NOT_FOUND", device.getUuid());
+
+        request.content(json);
+        request.accept(MEDIA_TYPE_JSON_UTF8);
+        request.contentType(MEDIA_TYPE_JSON_UTF8);
+
+        mockMvc.perform(request)
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 }

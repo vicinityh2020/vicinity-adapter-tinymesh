@@ -15,6 +15,7 @@ public class Device {
     @Id
     @GenericGenerator(name="system-uuid", strategy="uuid")
     private UUID uuid;
+
     private String deviceName;
     private String deviceType;
     private LocalDateTime dateTime;

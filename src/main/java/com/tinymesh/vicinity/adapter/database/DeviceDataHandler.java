@@ -20,9 +20,6 @@ public class DeviceDataHandler {
     private SessionFactory sessionFactory = new Configuration()
             .configure("database.xml")
             .buildSessionFactory();
-    //private Device device1 = new Device("Device1", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
-   // private Device device2 = new Device("Device2", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com");
-
 
 
     public void setData(List<Device> deviceList){
@@ -33,16 +30,17 @@ public class DeviceDataHandler {
 
             for(Device device : deviceList) {
                 session.save(device); }
-            session.getTransaction().commit();
+                session.getTransaction().commit();
 
             System.out.println("Device name is set!");
+
         }catch (Exception e){
             e.printStackTrace();
+
         }finally {
             //closing the session
             session.close();
         }
-        //closing the sessionFactory
     }
     public List<Device> retrieveData(){
 
@@ -53,7 +51,8 @@ public class DeviceDataHandler {
             transaction.commit();
             System.out.println(list);
 
-           session.close();
+
+            session.close();
             return list;
 
     }
