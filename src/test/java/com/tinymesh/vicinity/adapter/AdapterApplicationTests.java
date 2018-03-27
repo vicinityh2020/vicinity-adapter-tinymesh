@@ -3,7 +3,7 @@ package com.tinymesh.vicinity.adapter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tinymesh.vicinity.adapter.api.ObjectsApiController;
 import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
-import com.tinymesh.vicinity.adapter.model.Device;
+import com.tinymesh.vicinity.adapter.database.Device;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -90,6 +90,13 @@ public class AdapterApplicationTests {
 		checkGetStatusNOT_FOUND();
 	}
 
+	//Testing GET from actions
+    @Test
+    public void readAction() throws Exception{
+	    checkGetActionStatusOK();
+	    checkGetActionStatusNOT_FOUND();
+    }
+
     //Testing PUT to actions
     @Test
     public void setAction() throws Exception{
@@ -103,8 +110,6 @@ public class AdapterApplicationTests {
 				new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"),
 				new Device("Device2","Sensor2", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com"))
 				.collect(Collectors.toList());
-		DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
-		deviceDataHandler.setData(deviceList);
 
 		mockMvc.perform(get("/objects/{uuid}/properties/getState", deviceList.get(0).getUuid()))    //).param("uuid", uuid.toString()))
 				.andExpect(status().isOk())
@@ -117,8 +122,6 @@ public class AdapterApplicationTests {
 				new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"),
 				new Device("Device2","Sensor2", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com"))
 				.collect(Collectors.toList());
-		DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
-		deviceDataHandler.setData(deviceList);
 
 		mockMvc.perform(get("/objects/{uuid}/properties/NOT_FOUND", deviceList.get(0).getUuid()))    //).param("uuid", uuid.toString()))
 				.andExpect(status().isNotFound())
@@ -166,24 +169,47 @@ public class AdapterApplicationTests {
 
     }
 
-    /*
     //Checking Status is OK, when we GET from Action
-    @Test
     public void checkGetActionStatusOK () throws Exception {
 
-        List<Device> deviceList = Stream.of(
-                new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"),
-                new Device("Device2","Sensor2", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com"))
-                .collect(Collectors.toList());
-        DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
-        deviceDataHandler.setData(deviceList);
+        Device device = new Device("Device1", "Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
 
-        mockMvc.perform(get("/objects/{uuid}/actions/getAction", deviceList.get(0).getUuid()))
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(device);
+
+        MediaType MEDIA_TYPE_JSON_UTF8 = new MediaType("application", "json", java.nio.charset.Charset.forName("UTF-8"));
+        MockHttpServletRequestBuilder request = get("/objects/{uuid}/actions/getAction", device.getUuid());
+
+        request.content(json);
+        request.accept(MEDIA_TYPE_JSON_UTF8);
+        request.contentType(MEDIA_TYPE_JSON_UTF8);
+
+        mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andDo(print());
     }
 
-    */
+    //Checking Status is NOT_FOUND, when we GET from Action
+    public void checkGetActionStatusNOT_FOUND () throws Exception {
+
+        Device device = new Device("Device1", "Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(device);
+
+        MediaType MEDIA_TYPE_JSON_UTF8 = new MediaType("application", "json", java.nio.charset.Charset.forName("UTF-8"));
+        MockHttpServletRequestBuilder request = get("/objects/{uuid}/actions/NOT_FOUND", device.getUuid());
+
+        request.content(json);
+        request.accept(MEDIA_TYPE_JSON_UTF8);
+        request.contentType(MEDIA_TYPE_JSON_UTF8);
+
+        mockMvc.perform(request)
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+
     //Checking Status is OK, when we PUT to Action
     public void checkPutActionStatusOK() throws Exception {
 

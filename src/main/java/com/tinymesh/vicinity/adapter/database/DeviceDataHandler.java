@@ -1,6 +1,5 @@
 package com.tinymesh.vicinity.adapter.database;
 
-import com.tinymesh.vicinity.adapter.model.Device;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;

@@ -1,6 +1,7 @@
 package com.tinymesh.vicinity.adapter.api;
 
 import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
+import com.tinymesh.vicinity.adapter.database.Device;
 import com.tinymesh.vicinity.adapter.model.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -99,12 +100,13 @@ public class ObjectsApiController {
 
     @RequestMapping(value = "/objects/{oid}/actions/{aid}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<PropertyValue> getObjectActionStatus(@PathVariable UUID oid, @PathVariable String aid, @RequestBody ExecActionPayload body) {
-        try {
-            if (aid.equals("getAction")) {
-                return new ResponseEntity<>(new PropertyValue(), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_FOUND);
-            }
+    try {
+        if (aid.equals("getAction")) {
+
+            return new ResponseEntity<>(new PropertyValue(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_FOUND);
+        }
         } catch (HttpServerErrorException e) {
             e.printStackTrace();
         }

@@ -1,4 +1,4 @@
-package com.tinymesh.vicinity.adapter.model;
+package com.tinymesh.vicinity.adapter.database;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -8,8 +8,9 @@ import java.util.UUID;
 
 
 @Entity
+@Embeddable
 @Table(name = "device")
-public class Device {
+public class Device implements IDevice{
 
     private boolean state;
     @Id
@@ -31,7 +32,7 @@ public class Device {
         this.state = state;
         this.url = url;
     }
-    public Device(){}
+    public Device(Device device){}
 
 
     public String getDeviceName() {
