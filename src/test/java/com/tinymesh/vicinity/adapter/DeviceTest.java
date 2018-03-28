@@ -1,9 +1,8 @@
 package com.tinymesh.vicinity.adapter;
 
 import com.tinymesh.vicinity.adapter.api.ObjectsApiController;
-import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
 import com.tinymesh.vicinity.adapter.database.Device;
-import com.tinymesh.vicinity.adapter.database.DeviceUtilDataHandler;
+import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
 import com.tinymesh.vicinity.adapter.database.DeviceUtilization;
 import com.tinymesh.vicinity.adapter.model.ObjectInfo;
 import org.junit.Before;
@@ -54,10 +53,13 @@ public class DeviceTest {
 
         Device device = new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
 
-        deviceUtilList.add(new DeviceUtilization(UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), 4, device.getUuid()));
+        //deviceUtilList.add(new DeviceUtilization(UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), 4, device.getUuid()));
 
-        DeviceUtilDataHandler deviceUtilDataHandler = DeviceUtilDataHandler.getInstance();
-       // deviceUtilDataHandler.setData(deviceUtilList);
+        DeviceUtilization deviceUtilization = new DeviceUtilization(UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), 4, device.getUuid());
+        System.out.println(deviceUtilization);
+
+        //DeviceUtilDataHandler deviceUtilDataHandler = DeviceUtilDataHandler.getInstance();
+        // deviceUtilDataHandler.setData(deviceUtilList);
         // assertEquals(deviceDataHandler,objectsApiController);
         //deviceDataHandler.retrieveData();
     }
