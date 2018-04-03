@@ -32,7 +32,7 @@ public class Device implements IDevice{
         this.state = state;
         this.url = url;
     }
-    public Device(Device device){}
+    public Device(){}
 
 
     public String getDeviceName() {

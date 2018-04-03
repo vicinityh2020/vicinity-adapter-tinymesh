@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.test.annotation.Repeat;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -64,15 +65,16 @@ public class AdapterApplicationTests {
 
 	//Testing if object has same values as Device
 	@Test
+    @Repeat(3)
 	public void getAllObjects() throws Exception {
 		List<Device> deviceList =  new ArrayList<>();
-		deviceList.add(new Device("Device1","Device1", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"));
+		deviceList.add(new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"));
 		DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
 		deviceDataHandler.setData(deviceList);
 
         mockMvc.perform(get("/objects"))
 				.andExpect(status().isOk())
-                .andExpect(jsonPath("$", samePropertyValuesAs(ObjectsApiController.mapDataToObjectInfo(deviceList))))
+                .andExpect(jsonPath("$", samePropertyValuesAs(ObjectsApiController.mapDeviceDataToObjectInfo(deviceList))))
                 .andDo(print());
 	}
 
@@ -84,7 +86,7 @@ public class AdapterApplicationTests {
     }
 
     //Testing PUT to properties
-    @Test
+    //@Test
 	public void setProperty() throws Exception{
 		checkSetStatusOK();
 		checkGetStatusNOT_FOUND();

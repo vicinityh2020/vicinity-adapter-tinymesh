@@ -2,6 +2,7 @@ package com.tinymesh.vicinity.adapter.api;
 
 import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
 import com.tinymesh.vicinity.adapter.database.Device;
+import com.tinymesh.vicinity.adapter.database.DeviceUtilization;
 import com.tinymesh.vicinity.adapter.model.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +20,44 @@ public class ObjectsApiController {
     public Map getHashmapObjects(){
         return objects;
     }
+    public static List<ObjectInfo> mapDeviceUtilDataToObjectInfo(List<DeviceUtilization> deviceUtilizationList){
+        List<ObjectInfo> items = new ArrayList<>();
 
-    public static List<ObjectInfo> mapDataToObjectInfo(List<Device> deviceList){
+        for(DeviceUtilization deviceUtil : deviceUtilizationList) {
+            ObjectInfo objectInfo = new ObjectInfo();
+
+            List<ObjectProperty> objectProperties = new ArrayList<>();
+
+            objectInfo.setOid(deviceUtil.getUuid());
+            objectInfo.setName(null);
+            objectInfo.setType(null);
+            objectInfo.setActions(new ArrayList<>());
+            objectInfo.setEvents(new ArrayList<>());
+
+            LinkInfo linkInfo = new LinkInfo();
+            linkInfo.setHref("properties/state");
+            linkInfo.setMediaType("application/json");
+            OutputSchema outputSchema = new OutputSchema();
+            outputSchema.setDatatype("boolean");
+            outputSchema.setUnits("occupancy");
+            ObjectProperty prop = new ObjectProperty();
+            prop.setPid("state");
+            prop.setWritable(false);
+            prop.setMonitors("occupancy");
+            prop.addReadLinksItem(linkInfo);
+            prop.setWriteLinks(new ArrayList<>());
+            prop.setOutput(outputSchema);
+            objectProperties.add(prop);
+
+            objectInfo.properties(objectProperties);
+
+            items.add(objectInfo);
+        }
+
+        return items;
+    }
+
+    public static List<ObjectInfo> mapDeviceDataToObjectInfo(List<Device> deviceList){
         List<ObjectInfo> items = new ArrayList<>();
 
         for(Device device : deviceList) {
@@ -60,11 +97,10 @@ public class ObjectsApiController {
     @RequestMapping(value = "/objects", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<ObjectInfo>> getObjects() {
 
-
         List<ObjectInfo> objectList;
         DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
         List<Device> deviceList = deviceDataHandler.retrieveData();
-            objectList = mapDataToObjectInfo(deviceList);
+            objectList = mapDeviceDataToObjectInfo(deviceList);
         return new ResponseEntity<>(objectList, HttpStatus.OK);
     }
 
@@ -87,7 +123,6 @@ public class ObjectsApiController {
     public ResponseEntity<PropertyValue> setObjectProperty(@PathVariable UUID oid, @PathVariable String pid, @RequestBody SetPropertyValue body) {
         try{
             if(pid.equals("setState")) {
-
                 return new ResponseEntity<>(new PropertyValue(), HttpStatus.OK);
             }else{
                 return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_FOUND);
@@ -102,7 +137,6 @@ public class ObjectsApiController {
     public ResponseEntity<PropertyValue> getObjectActionStatus(@PathVariable UUID oid, @PathVariable String aid, @RequestBody ExecActionPayload body) {
     try {
         if (aid.equals("getAction")) {
-
             return new ResponseEntity<>(new PropertyValue(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_FOUND);

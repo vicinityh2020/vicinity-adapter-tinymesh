@@ -2,16 +2,14 @@ package com.tinymesh.vicinity.adapter.database;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+
 @Entity
 @Table(name = "deviceutilization")
-public class DeviceUtilization implements IDeviceUtilization{
+public class DeviceUtilization {
 
     @Id
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
@@ -21,8 +19,9 @@ public class DeviceUtilization implements IDeviceUtilization{
     private LocalDateTime closed;
     private int utilization;
 
-    @Embedded
+
     private UUID deviceUUID;
+
 
 
     public DeviceUtilization(UUID uuid, LocalDateTime opened, LocalDateTime closed, int utilization, UUID deviceUUID){
@@ -33,6 +32,9 @@ public class DeviceUtilization implements IDeviceUtilization{
         this.deviceUUID = deviceUUID;
     }
 
+    public DeviceUtilization(){
+
+    }
     public UUID getUuid() {
         return uuid;
     }

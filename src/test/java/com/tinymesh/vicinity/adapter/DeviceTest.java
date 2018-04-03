@@ -3,6 +3,7 @@ package com.tinymesh.vicinity.adapter;
 import com.tinymesh.vicinity.adapter.api.ObjectsApiController;
 import com.tinymesh.vicinity.adapter.database.Device;
 import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
+import com.tinymesh.vicinity.adapter.database.DeviceUtilDataHandler;
 import com.tinymesh.vicinity.adapter.database.DeviceUtilization;
 import com.tinymesh.vicinity.adapter.model.ObjectInfo;
 import org.junit.Before;
@@ -36,31 +37,38 @@ public class DeviceTest {
         deviceList.add(new Device("Device2","Sensor", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com"));
         DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
         deviceDataHandler.setData(deviceList);
-       // List<Device> retrievedDevices = deviceDataHandler.retrieveData();
 
 
-        List<ObjectInfo> objectInfoList = objectsApiController.mapDataToObjectInfo(deviceList);
+        List<ObjectInfo> objectInfoList = objectsApiController.mapDeviceDataToObjectInfo(deviceList);
         Device fstDevice = deviceList.get(1);
         ObjectInfo fstObjInfo = objectInfoList.get(1);
-        ObjectsApiController objectsApiController = new ObjectsApiController();
 
         assertEquals(fstDevice.getDeviceName(), fstObjInfo.getName());
         assertEquals(fstDevice.getDeviceType(), fstObjInfo.getType());
         assertEquals(fstDevice.getUuid(), fstObjInfo.getOid());
 
 
-        //DeviceUtilTest
+    }
+    @Test
+    public void getAllObjectsDeviceUtil() {
 
         Device device = new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
 
-        //deviceUtilList.add(new DeviceUtilization(UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), 4, device.getUuid()));
+        deviceUtilList.add(new DeviceUtilization(UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), 4, device.getUuid()));
+        System.out.println(deviceUtilList.get(0));
+        DeviceUtilDataHandler deviceUtilDataHandler = DeviceUtilDataHandler.getInstance();
+        deviceUtilDataHandler.setData(deviceUtilList);
+        List<DeviceUtilization> deviceUtilList = deviceUtilDataHandler.retrieveData();
+        //deviceUtilList.stream().forEach(System.out::println);
 
-        DeviceUtilization deviceUtilization = new DeviceUtilization(UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), 4, device.getUuid());
-        System.out.println(deviceUtilization);
 
-        //DeviceUtilDataHandler deviceUtilDataHandler = DeviceUtilDataHandler.getInstance();
-        // deviceUtilDataHandler.setData(deviceUtilList);
-        // assertEquals(deviceDataHandler,objectsApiController);
-        //deviceDataHandler.retrieveData();
+        List<ObjectInfo> objectInfoList = objectsApiController.mapDeviceUtilDataToObjectInfo(deviceUtilList);
+        DeviceUtilization fstDeviceUtil = deviceUtilList.get(0);
+        ObjectInfo fstObjInfo = objectInfoList.get(0);
+
+        assertEquals(fstDeviceUtil.getUuid(), fstObjInfo.getOid());
+        assertEquals(deviceUtilList.get(0).getDeviceUUID(), device.getUuid());
+
+
     }
 }

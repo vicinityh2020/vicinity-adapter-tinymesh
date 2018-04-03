@@ -27,8 +27,8 @@ public class DeviceUtilDataHandler {
             transaction = session.beginTransaction();
 
             for(DeviceUtilization deviceUtil : deviceUtilList) {
-            session.save(deviceUtil); }
-            session.getTransaction().commit();
+                session.save(deviceUtil); }
+                session.getTransaction().commit();
 
         }catch (Exception e){
             e.printStackTrace();
@@ -42,7 +42,7 @@ public class DeviceUtilDataHandler {
 
         session = sessionFactory.openSession();
         transaction = session.beginTransaction();
-        Query query = session.createQuery("FROM deviceutilization");
+        Query query = session.createQuery("FROM DeviceUtilization");
         List<DeviceUtilization> list = query.list();
         transaction.commit();
         System.out.println(list);
