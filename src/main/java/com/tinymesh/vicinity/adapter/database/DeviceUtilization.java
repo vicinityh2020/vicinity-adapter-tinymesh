@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "deviceutilization")
-public class DeviceUtilization {
+public class DeviceUtilization implements IDeviceUtilization{
 
     @Id
     @GenericGenerator(name = "system-uuid", strategy = "uuid")

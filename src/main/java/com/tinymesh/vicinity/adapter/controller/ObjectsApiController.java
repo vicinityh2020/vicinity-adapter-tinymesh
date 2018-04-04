@@ -1,4 +1,4 @@
-package com.tinymesh.vicinity.adapter.api;
+package com.tinymesh.vicinity.adapter.controller;
 
 import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
 import com.tinymesh.vicinity.adapter.database.Device;
