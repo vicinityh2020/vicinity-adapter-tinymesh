@@ -2,7 +2,6 @@ package com.tinymesh.vicinity.adapter.bootstrap;
 
 import com.tinymesh.vicinity.adapter.database.Device;
 import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
-import com.tinymesh.vicinity.adapter.database.DeviceUtilDataHandler;
 import com.tinymesh.vicinity.adapter.database.DeviceUtilization;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -41,8 +40,8 @@ public class ObjectBootstrap implements ApplicationListener<ContextRefreshedEven
 
         DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
         deviceDataHandler.setData(deviceList);
-        DeviceUtilDataHandler deviceUtilDataHandler = DeviceUtilDataHandler.getInstance();
-        deviceUtilDataHandler.setData(deviceUtilizations);
+        //DeviceUtilDataHandler deviceUtilDataHandler = DeviceUtilDataHandler.getInstance();
+        //deviceUtilDataHandler.setData(deviceUtilizations);
     }
 
     private void createDeviceUtilObjects(){
