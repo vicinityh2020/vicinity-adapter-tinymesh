@@ -3,12 +3,12 @@ package com.tinymesh.vicinity.adapter.jsonmodels;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.Arrays;
 
 public class DoorSensor {
     private LocalDateTime recieved;
     private LocalDateTime datetime;
-    private UUID key;
+    private String key;
 
     @JsonProperty("proto/tm")
     private DeviceProperties deviceProperties;
@@ -16,6 +16,21 @@ public class DoorSensor {
     private long sid;
     private long uid;
     private String detail;
+    private String network;
+    private String type;
+    private long address;
+    private String name;
+    private String provisioned;
+
+    public String[] getLocation() {
+        return location;
+    }
+
+    public void setLocation(String[] location) {
+        this.location = location;
+    }
+
+    private String[] location;
 
     public LocalDateTime getRecieved() {
         return recieved;
@@ -33,11 +48,11 @@ public class DoorSensor {
         this.datetime = datetime;
     }
 
-    public UUID getKey() {
+    public String getKey() {
         return key;
     }
 
-    public void setKey(UUID key) {
+    public void setKey(String key) {
         this.key = key;
     }
 
@@ -79,6 +94,66 @@ public class DoorSensor {
 
     public void setDetail(String detail) {
         this.detail = detail;
+    }
+
+    public String getNetwork() {
+        return network;
+    }
+
+    public void setNetwork(String network) {
+        this.network = network;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public long getAddress() {
+        return address;
+    }
+
+    public void setAddress(long address) {
+        this.address = address;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getProvisioned() {
+        return provisioned;
+    }
+
+    public void setProvisioned(String provisioned) {
+        this.provisioned = provisioned;
+    }
+
+    @Override
+    public String toString() {
+        return "DoorSensor{" +
+                "recieved=" + recieved +
+                ", datetime=" + datetime +
+                ", key='" + key + '\'' +
+                ", deviceProperties=" + deviceProperties +
+                ", network_lvl=" + network_lvl +
+                ", sid=" + sid +
+                ", uid=" + uid +
+                ", detail='" + detail + '\'' +
+                ", network='" + network + '\'' +
+                ", type='" + type + '\'' +
+                ", address=" + address +
+                ", name='" + name + '\'' +
+                ", provisioned='" + provisioned + '\'' +
+                ", location=" + Arrays.toString(location) +
+                '}';
     }
 }
 
