@@ -1,18 +1,17 @@
 package com.tinymesh.vicinity.adapter.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensor;
 import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensorJSON;
 import org.springframework.http.*;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 
-
-public class TinyMClient {
-
+@Service
+public class TinyMClient{
 
     private RestTemplate restTemplate;
 
@@ -20,8 +19,7 @@ public class TinyMClient {
         this.restTemplate = restTemplate;
     }
 
-
-    DoorSensorJSON getDoorSenors(){
+    public DoorSensorJSON getDoorSenors(){
         ObjectMapper objectMapper = new ObjectMapper();
         DoorSensorJSON doorSensorJSON;
         HttpHeaders headers = new HttpHeaders();

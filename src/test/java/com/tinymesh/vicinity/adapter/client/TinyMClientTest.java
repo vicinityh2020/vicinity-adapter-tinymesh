@@ -65,5 +65,7 @@ public class TinyMClientTest {
         DoorSensorJSON resp = client.getDoorSenors();
 
         assertNotNull(resp);
+
+
     }
 }
