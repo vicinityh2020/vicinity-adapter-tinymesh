@@ -1,8 +1,14 @@
 package com.tinymesh.vicinity.adapter.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensor;
+import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensorJSON;
 import org.springframework.http.*;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
 
 
 public class TinyMClient {
@@ -15,18 +21,30 @@ public class TinyMClient {
     }
 
 
-    ResponseEntity<DoorSensor> getDoorSenors(){
+    DoorSensorJSON getDoorSenors(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        DoorSensorJSON doorSensorJSON;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("testHeader", "Test ");
 
+        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+        restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+
+
         //Tester i httpbin.org
         String url = "http://localhost:1080/headers";
 
-        HttpEntity<DoorSensor> entity = new HttpEntity<>(headers);
-        ResponseEntity<DoorSensor> result = restTemplate.exchange(url, HttpMethod.GET, entity, DoorSensor.class);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
-        //System.out.println(result.getBody());
-        return result;
+        try {
+            doorSensorJSON = objectMapper.readValue(result.getBody(), DoorSensorJSON.class);
+            return doorSensorJSON;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
