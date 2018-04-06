@@ -1,52 +1,38 @@
 package com.tinymesh.vicinity.adapter.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensor;
 import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensorJSON;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockserver.client.server.MockServerClient;
 import org.mockserver.junit.MockServerRule;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockserver.model.Header.header;
 import static org.mockserver.model.JsonBody.json;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+
 public class TinyMClientTest {
     @Rule
     public MockServerRule mockServerRule = new MockServerRule(this, 1080);
 
     private MockServerClient mockServerClient;
 
-    @Autowired
     RestTemplate restTemplate;
-
     TinyMClient client;
 
     @Before
     public void setUp() throws Exception {
+        restTemplate = new RestTemplate();
         client = new TinyMClient(restTemplate);
     }
 
 
     @Test
     public void getDoorSensors(){
-        mockServerClient.when(HttpRequest.request("/headers"))
+        mockServerClient.when(HttpRequest.request("/v2/device/nid"))
                 .respond(HttpResponse.response()
                         .withBody(json(
                         "{\n" +

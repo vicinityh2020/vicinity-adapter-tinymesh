@@ -33,7 +33,7 @@ public class TinyMClient {
 
 
         //Tester i httpbin.org
-        String url = "http://localhost:1080/headers";
+        String url = "http://localhost:1080/v2/device/nid";
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
