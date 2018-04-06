@@ -21,7 +21,7 @@ public class TinyMClient {
         headers.set("testHeader", "Test ");
 
         //Tester i httpbin.org
-        String url = "https://httpbin.org/headers";
+        String url = "http://localhost:1080/headers";
 
         HttpEntity<DoorSensor> entity = new HttpEntity<>(headers);
         ResponseEntity<DoorSensor> result = restTemplate.exchange(url, HttpMethod.GET, entity, DoorSensor.class);
