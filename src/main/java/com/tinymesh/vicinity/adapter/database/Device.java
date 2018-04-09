@@ -1,6 +1,7 @@
 package com.tinymesh.vicinity.adapter.database;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.util.UUID;
 @Embeddable
 @Table(name = "device")
 public class Device implements IDevice{
+
 
     private boolean state;
     @Id
