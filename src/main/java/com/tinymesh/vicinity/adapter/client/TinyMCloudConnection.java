@@ -1,8 +1,7 @@
-package com.tinymesh.vicinity.adapter.connection;
+package com.tinymesh.vicinity.adapter.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tinymesh.vicinity.adapter.database.Device;
-import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensorJSON;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;

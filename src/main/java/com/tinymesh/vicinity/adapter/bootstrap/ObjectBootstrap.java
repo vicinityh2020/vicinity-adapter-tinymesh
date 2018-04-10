@@ -1,17 +1,10 @@
 package com.tinymesh.vicinity.adapter.bootstrap;
 
 import com.tinymesh.vicinity.adapter.client.TinyMClient;
-import com.tinymesh.vicinity.adapter.connection.TinyMCloudConnection;
-import com.tinymesh.vicinity.adapter.database.Device;
-import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensorJSON;
-import org.mockserver.client.server.MockServerClient;
-import org.mockserver.integration.ClientAndServer;
+import com.tinymesh.vicinity.adapter.client.TinyMCloudConnection;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
