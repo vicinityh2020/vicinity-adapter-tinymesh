@@ -74,4 +74,31 @@ public class TinyMClientTest {
                 .andExpect(status().isOk())
                 .andDo(print());
     }
+
+    @Test
+    public void tinyMClientDevicesChunckedRespones(){
+
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", authHeader);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                "https://http.cloud.tiny-mesh.com/v2/messages/T?date.from=NOW//-5MINUTE&data.encoding=hex&continuous=true&stream=true",
+                GET, entity, String.class);
+
+        assertNotNull(response);
+
+        String matcher = response.getBody();
+        String type = "type";
+        String name = "name";
+        String key = "key";
+        String provisioned = "provisioned";
+        assertThat(matcher, containsString(type));
+        assertThat(matcher, containsString(name));
+        assertThat(matcher, containsString(key));
+        assertThat(matcher, containsString(provisioned));
+    }
 }
