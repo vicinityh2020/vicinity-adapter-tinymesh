@@ -25,6 +25,8 @@ public class ObjectBootstrap implements ApplicationListener<ContextRefreshedEven
         List<DoorSensorJSON> devices = tinyMClient.requestDevices();
         for (DoorSensorJSON device : devices){
             System.out.println(device);
+            DoorSensorJSON test =  tinyMClient.requestDevice(device.getKey());
+            System.out.println(test);
         }
     }
 }
