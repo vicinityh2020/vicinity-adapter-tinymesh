@@ -17,7 +17,13 @@ import static org.mockserver.model.JsonBody.json;
 @SpringBootApplication
 public class AdapterApplication {
 
-	private TinyMClient tinyMClient;
+
+	public static void main(String[] args) {
+		getDoorsFromAPI();
+		SpringApplication.run(AdapterApplication.class, args);
+
+	}
+
 
 	private static void getDoorsFromAPI(){
 		new ClientAndServer(1080)
@@ -47,10 +53,5 @@ public class AdapterApplication {
 										"  }\n" +
 										"}"))
 				);
-	}
-	public static void main(String[] args) {
-		getDoorsFromAPI();
-		SpringApplication.run(AdapterApplication.class, args);
-
 	}
 }

@@ -1,6 +1,7 @@
 package com.tinymesh.vicinity.adapter.bootstrap;
 
 import com.tinymesh.vicinity.adapter.client.TinyMClient;
+import com.tinymesh.vicinity.adapter.connection.TinyMCloudConnection;
 import com.tinymesh.vicinity.adapter.database.Device;
 import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensorJSON;
 import org.mockserver.client.server.MockServerClient;
@@ -19,18 +20,21 @@ import static org.mockserver.model.JsonBody.json;
 @Component
 public class ObjectBootstrap implements ApplicationListener<ContextRefreshedEvent>{
 
+
+
     //private List<Device> deviceList;
     //private List<DeviceUtilization> deviceUtilizations;
+    private TinyMCloudConnection tinyMCloudConnection;
     private TinyMClient tinyMClient;
 
-    public ObjectBootstrap(TinyMClient tinyMClient) {
+    public ObjectBootstrap(TinyMCloudConnection tinyMCloudConnection, TinyMClient tinyMClient) {
+        this.tinyMCloudConnection = tinyMCloudConnection;
         this.tinyMClient = tinyMClient;
     }
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-
-        //getDoorsFromAPI();
+        tinyMCloudConnection.requestGet();
     }
 
     private void createDeviceObjects(){
