@@ -1,20 +1,24 @@
 package com.tinymesh.vicinity.adapter.bootstrap;
 
 import com.tinymesh.vicinity.adapter.client.TinyMClient;
+import com.tinymesh.vicinity.adapter.database.Device;
+import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
 import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensorJSON;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
-import static org.mockserver.model.JsonBody.json;
+import java.util.UUID;
 
 @Component
 public class ObjectBootstrap implements ApplicationListener<ContextRefreshedEvent>{
     private TinyMClient tinyMClient;
+    @Value("${tinymesh.client.base_url}")
+    String baseURL;
 
     public ObjectBootstrap(TinyMClient tinyMClient) {
         this.tinyMClient = tinyMClient;
@@ -23,8 +27,12 @@ public class ObjectBootstrap implements ApplicationListener<ContextRefreshedEven
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         List<DoorSensorJSON> devices = tinyMClient.requestDevices();
+        DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
+        List<Device> deviceObjects = new ArrayList<>();
         for (DoorSensorJSON device : devices){
-            System.out.println(device);
+            String deviceURL = baseURL + "/v2/device/" + device.getNetwork() + "/" + device.getKey();
+            deviceObjects.add(new Device(device.getName(), device.getType(), UUID.randomUUID(), LocalDateTime.now(), true, deviceURL));
         }
+        deviceDataHandler.setData(deviceObjects);
     }
 }
