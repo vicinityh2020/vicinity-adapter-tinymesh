@@ -2,6 +2,7 @@ package com.tinymesh.vicinity.adapter.controller;
 
 import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
 import com.tinymesh.vicinity.adapter.database.Device;
+import com.tinymesh.vicinity.adapter.database.DeviceUtilDataHandler;
 import com.tinymesh.vicinity.adapter.database.DeviceUtilization;
 import com.tinymesh.vicinity.adapter.model.*;
 import org.springframework.http.HttpStatus;
@@ -10,20 +11,26 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 public class ObjectsApiController {
 
     private static Map<UUID, ObjectInfo> objects = new HashMap<>();
 
-    public Map getHashmapObjects(){
+    public Map getHashmapObjects() {
         return objects;
     }
-    public static List<ObjectInfo> mapDeviceUtilDataToObjectInfo(List<DeviceUtilization> deviceUtilizationList){
+
+    public static List<ObjectInfo> mapDeviceUtilDataToObjectInfo(List<DeviceUtilization> deviceUtilizationList) {
         List<ObjectInfo> items = new ArrayList<>();
 
-        for(DeviceUtilization deviceUtil : deviceUtilizationList) {
+        for (DeviceUtilization deviceUtil : deviceUtilizationList) {
             ObjectInfo objectInfo = new ObjectInfo();
 
             List<ObjectProperty> objectProperties = new ArrayList<>();
@@ -57,10 +64,10 @@ public class ObjectsApiController {
         return items;
     }
 
-    public static List<ObjectInfo> mapDeviceDataToObjectInfo(List<Device> deviceList){
+    public static List<ObjectInfo> mapDeviceDataToObjectInfo(List<Device> deviceList) {
         List<ObjectInfo> items = new ArrayList<>();
 
-        for(Device device : deviceList) {
+        for (Device device : deviceList) {
             ObjectInfo objectInfo = new ObjectInfo();
 
             List<ObjectProperty> objectProperties = new ArrayList<>();
@@ -100,35 +107,35 @@ public class ObjectsApiController {
         List<ObjectInfo> objectList;
         DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
         List<Device> deviceList = deviceDataHandler.retrieveData();
-            objectList = mapDeviceDataToObjectInfo(deviceList);
+        objectList = mapDeviceDataToObjectInfo(deviceList);
         return new ResponseEntity<>(objectList, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/objects/{oid}/properties/{pid}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<PropertyValue> getObjectProperty(@PathVariable UUID oid, @PathVariable String pid) throws HttpClientErrorException{
-    try{
+    @RequestMapping(value = "/objects/{oid}/properties/{pid}",
+                    method = RequestMethod.GET,
+                    produces = "application/json")
+    public ResponseEntity<PropertyValue> getObjectProperty(@PathVariable UUID oid, @PathVariable String pid)
+            throws HttpClientErrorException {
+        try {
+            if (pid.equals("getState")){
 
-        if(pid.equals("getState")) {
-
-            return new ResponseEntity<>(new PropertyValue(), HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_FOUND);
-        }
-        }catch(HttpServerErrorException e){
+            }
+        } catch (HttpServerErrorException e) {
             e.printStackTrace();
         }
-        return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_IMPLEMENTED);
+        // if not oid
+        return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(value = "/objects/{oid}/properties/{pid}", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")
     public ResponseEntity<PropertyValue> setObjectProperty(@PathVariable UUID oid, @PathVariable String pid, @RequestBody SetPropertyValue body) {
-        try{
-            if(pid.equals("setState")) {
+        try {
+            if (pid.equals("setState")) {
                 return new ResponseEntity<>(new PropertyValue(), HttpStatus.OK);
-            }else{
+            } else {
                 return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_FOUND);
             }
-        }catch(HttpServerErrorException e){
+        } catch (HttpServerErrorException e) {
             e.printStackTrace();
         }
         return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_IMPLEMENTED);
@@ -136,12 +143,12 @@ public class ObjectsApiController {
 
     @RequestMapping(value = "/objects/{oid}/actions/{aid}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<PropertyValue> getObjectActionStatus(@PathVariable UUID oid, @PathVariable String aid, @RequestBody ExecActionPayload body) {
-    try {
-        if (aid.equals("getAction")) {
-            return new ResponseEntity<>(new PropertyValue(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_FOUND);
-        }
+        try {
+            if (aid.equals("getAction")) {
+                return new ResponseEntity<>(new PropertyValue(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_FOUND);
+            }
         } catch (HttpServerErrorException e) {
             e.printStackTrace();
         }
