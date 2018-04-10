@@ -107,6 +107,7 @@ public class ObjectsApiController {
     @RequestMapping(value = "/objects/{oid}/properties/{pid}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<PropertyValue> getObjectProperty(@PathVariable UUID oid, @PathVariable String pid) throws HttpClientErrorException{
     try{
+
         if(pid.equals("getState")) {
 
             return new ResponseEntity<>(new PropertyValue(), HttpStatus.OK);
