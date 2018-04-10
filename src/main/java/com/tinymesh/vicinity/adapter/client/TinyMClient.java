@@ -2,19 +2,18 @@ package com.tinymesh.vicinity.adapter.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tinymesh.vicinity.adapter.database.Device;
-import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensor;
 import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensorJSON;
-import com.tinymesh.vicinity.adapter.model.ObjectInfo;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
-
 
 import static org.springframework.http.HttpMethod.GET;
 
@@ -42,7 +41,7 @@ public class TinyMClient {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
 
-        ResponseEntity<String> response = restTemplate.exchange("https://http.cloud.tiny-mesh.com/v2/device/T", GET, entity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange("https://http.cloud.tiny-mesh.com/v2/device/T/", GET, entity, String.class);
         System.out.println(response.getBody());
 
 

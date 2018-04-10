@@ -1,63 +1,77 @@
 package com.tinymesh.vicinity.adapter.client;
-
-import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensorJSON;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.mockserver.client.server.MockServerClient;
-import org.mockserver.junit.MockServerRule;
-import org.mockserver.model.HttpRequest;
-import org.mockserver.model.HttpResponse;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 
+import java.nio.charset.Charset;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertNotNull;
-import static org.mockserver.model.JsonBody.json;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 public class TinyMClientTest {
-    @Rule
-    public MockServerRule mockServerRule = new MockServerRule(this, 1080);
 
-    private MockServerClient mockServerClient;
+
 
     RestTemplate restTemplate;
     TinyMClient client;
+
+    MockMvc mockMvc;
+
+    String email = "test@tiny-mesh.com";
+    String pass = "***REMOVED***";
+    String credentials = email + ":" + pass;
+    byte[] encodedAuthHeaderValue = Base64.encodeBase64(credentials.getBytes(Charset.forName("US-ASCII")));
+    String authHeader = "Basic " + new String(encodedAuthHeaderValue);
 
     @Before
     public void setUp() throws Exception {
         restTemplate = new RestTemplate();
         client = new TinyMClient(restTemplate);
+
+
     }
 
+    @Test
+    public void tinyMClientDevices(){
+
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", authHeader);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+
+        ResponseEntity<String> response = restTemplate.exchange("https://http.cloud.tiny-mesh.com/v2/device/T/", GET, entity, String.class);
+
+        assertNotNull(response);
+
+        String matcher = response.getBody();
+        String type = "type";
+        String name = "name";
+        String key = "key";
+        String provisioned = "provisioned";
+        assertThat(matcher, containsString(type));
+        assertThat(matcher, containsString(name));
+        assertThat(matcher, containsString(key));
+        assertThat(matcher, containsString(provisioned));
+    }
 
     @Test
-    public void getDoorSensors(){
-        mockServerClient.when(HttpRequest.request("/v2/device/nid"))
-                .respond(HttpResponse.response()
-                        .withBody(json(
-                        "{\n" +
-                        "  \"key\" : \"gidKaYtHvUVOo\",\n" +
-                        "  \"location\" : [],                \n" +
-                        "  \"proto/tm\" : {                  \n" +
-                        "    \"firmware\" : \"2.01\",\n" +
-                        "    \"hardware\" : \"2.00\"\n" +
-                        "  },\n" +
-                        "  \"network\" : \"T\",                \n" +
-                        "  \"type\" : \"building-sensor-v3\", \n" +
-                        "  \"address\" : 1074135040,      \n" +
-                        "  \"name\" : \"Test B - 119 sek CO2, 10 min intervall\",\n" +
-                        "  \"provisioned\" : \"active\",   \n" +
-                        "  \"meta\" : {\n" +
-                        "    \"updated\" : \"2018-03-19T09:53:50.760Z\",\n" +
-                        "    \"event/date\" : \"2017-06-23T11:20:52.446Z\",  \n" +
-                        "    \"created\" : \"2017-03-17T15:17:58.369Z\",     \n" +
-                        "    \"event/key\" : \"1eq-6jok-djhg-511-VC9naWRLYVl0SHZVVk9v\" \n" +
-                        "  }\n" +
-                        "}"))
-                        .withStatusCode(200));
-
-        DoorSensorJSON resp = client.getDoorSenors();
-
-        assertNotNull(resp);
+    public void requestGetStatusOK() throws Exception {
+        mockMvc.perform(get("https://http.cloud.tiny-mesh.com/v2/device/T/"))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 }
