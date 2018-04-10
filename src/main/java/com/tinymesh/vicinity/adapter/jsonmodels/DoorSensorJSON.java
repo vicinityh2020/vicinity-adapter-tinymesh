@@ -36,7 +36,7 @@ public class DoorSensorJSON {
     @JsonProperty("type")
     private String type;
     @JsonProperty("address")
-    private Integer address;
+    private Long address;
     @JsonProperty("name")
     private String name;
     @JsonProperty("provisioned")
@@ -97,12 +97,12 @@ public class DoorSensorJSON {
     }
 
     @JsonProperty("address")
-    public Integer getAddress() {
+    public Long getAddress() {
         return address;
     }
 
     @JsonProperty("address")
-    public void setAddress(Integer address) {
+    public void setAddress(Long address) {
         this.address = address;
     }
 
