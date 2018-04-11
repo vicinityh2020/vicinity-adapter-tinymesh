@@ -68,7 +68,7 @@ public class TinyMClientTest {
         assertThat(matcher, containsString(provisioned));
     }
 
-    @Test
+//    @Test
     public void requestGetStatusOK() throws Exception {
         mockMvc.perform(get("https://http.cloud.tiny-mesh.com/v2/device/T/"))
                 .andExpect(status().isOk())
@@ -85,20 +85,19 @@ public class TinyMClientTest {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
 
+
+
+/*
         ResponseEntity<String> response = restTemplate.exchange(
                 "https://http.cloud.tiny-mesh.com/v2/messages/T?date.from=NOW//-5MINUTE&data.encoding=hex&continuous=true&stream=true",
                 GET, entity, String.class);
+ */
 
-        assertNotNull(response);
 
-        String matcher = response.getBody();
-        String type = "type";
-        String name = "name";
-        String key = "key";
-        String provisioned = "provisioned";
-        assertThat(matcher, containsString(type));
-        assertThat(matcher, containsString(name));
-        assertThat(matcher, containsString(key));
-        assertThat(matcher, containsString(provisioned));
+
+
+
+
+
     }
 }

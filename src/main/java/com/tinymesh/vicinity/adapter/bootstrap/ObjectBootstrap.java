@@ -1,5 +1,6 @@
 package com.tinymesh.vicinity.adapter.bootstrap;
 
+import com.tinymesh.vicinity.adapter.client.StreamTinyMCloud;
 import com.tinymesh.vicinity.adapter.client.TinyMClient;
 import com.tinymesh.vicinity.adapter.database.Device;
 import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Component
+//@Component
 public class ObjectBootstrap implements ApplicationListener<ContextRefreshedEvent>{
     private TinyMClient tinyMClient;
     @Value("${tinymesh.client.base_url}")
