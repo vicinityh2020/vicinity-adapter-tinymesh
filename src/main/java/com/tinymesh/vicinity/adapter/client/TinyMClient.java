@@ -2,6 +2,8 @@ package com.tinymesh.vicinity.adapter.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tinymesh.vicinity.adapter.database.Device;
+import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
 import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensor;
 import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensorJSON;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -12,7 +14,10 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 import static org.springframework.http.HttpMethod.GET;
@@ -33,6 +38,16 @@ public class TinyMClient {
 
     public TinyMClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
+    }
+
+    public List<Device> syncDevices(){
+        List<DoorSensorJSON> devices = this.requestDevices();
+        List<Device> deviceObjects = new ArrayList<>();
+        devices.stream().filter(device -> device.getProvisioned().equals("active")).forEach(device -> {
+            String deviceURL = baseURL + "/v2/device/" + device.getNetwork() + "/" + device.getKey();
+            deviceObjects.add(new Device(device.getName(), device.getType(), UUID.randomUUID(), LocalDateTime.now(), true, deviceURL));
+        });
+        return deviceObjects;
     }
 
     public List<DoorSensorJSON> requestDevices(){
