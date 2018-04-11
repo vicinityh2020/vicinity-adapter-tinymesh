@@ -30,6 +30,9 @@ public class ObjectBootstrap implements ApplicationListener<ContextRefreshedEven
         DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
         List<Device> deviceObjects = new ArrayList<>();
         for (DoorSensorJSON device : devices){
+            if(!device.getProvisioned().equals("active")){
+                continue;
+            }
             String deviceURL = baseURL + "/v2/device/" + device.getNetwork() + "/" + device.getKey();
             deviceObjects.add(new Device(device.getName(), device.getType(), UUID.randomUUID(), LocalDateTime.now(), true, deviceURL));
         }
