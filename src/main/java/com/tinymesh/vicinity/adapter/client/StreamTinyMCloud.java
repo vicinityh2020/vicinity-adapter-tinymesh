@@ -16,6 +16,9 @@ public class StreamTinyMCloud {
     @Value("${tinymesh.client.pass}")
     private String pass;
 
+    @Value("${tinymesh.client.stream_messages_uri}")
+    private String streamMessagesUri;
+
 
     private WebClient webClient;
 
@@ -23,15 +26,27 @@ public class StreamTinyMCloud {
         this.webClient = webClient;
     }
 
+    /**
+     *  Streaming messages from Tiny Mesh cloud using Webflux.
+     *  streamMessagesUri is declared in application.properties at resources.
+     *  On streamMessagesUri it is declared how long it should stream data from Tiny Mesh Cloud.
+     *
+     * @param email
+     * @param pass
+     * @return
+     */
     public Flux<String> streamMessages(String email, String pass) {
         return webClient.get()
-                .uri("/v2/messages/T?date.from=NOW//-5MINUTE&data.encoding=hex&continuous=true&stream=true")
+                .uri(streamMessagesUri)
                 .header("Authorization", "Basic " + Base64Utils
                         .encodeToString((email + ":" + pass).getBytes(Charset.forName("US-ASCII"))))
                 .retrieve()
                 .bodyToFlux(String.class);
     }
 
+    /**
+     * Printing all messages that is streamed.
+     */
     public void printStreamedMessages() {
         streamMessages(email,pass).subscribe(System.out :: println, Throwable::printStackTrace);
     }
