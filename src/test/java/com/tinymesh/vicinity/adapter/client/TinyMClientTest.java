@@ -1,105 +1,85 @@
 package com.tinymesh.vicinity.adapter.client;
-import org.apache.tomcat.util.codec.binary.Base64;
+
+import com.tinymesh.vicinity.adapter.database.Device;
+import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensorJSON;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.nio.charset.Charset;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Optional;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
-
+@RunWith(MockitoJUnitRunner.class)
 public class TinyMClientTest {
+    private BufferedReader in = null;
+    private String respBody;
 
+    @Mock
+    private RestTemplate restTemplate;
 
-
-    RestTemplate restTemplate;
-    TinyMClient client;
-
-    MockMvc mockMvc;
-
-    String email = "test@tiny-mesh.com";
-    String pass = "***REMOVED***";
-    String credentials = email + ":" + pass;
-    byte[] encodedAuthHeaderValue = Base64.encodeBase64(credentials.getBytes(Charset.forName("US-ASCII")));
-    String authHeader = "Basic " + new String(encodedAuthHeaderValue);
+    @InjectMocks
+    private TinyMClient client;
 
     @Before
     public void setUp() throws Exception {
-        restTemplate = new RestTemplate();
-        client = new TinyMClient(restTemplate);
+        ReflectionTestUtils.setField(client, "baseURL", "https://http.cloud.tiny-mesh.com");
+        ReflectionTestUtils.setField(client, "pass", "***REMOVED***");
+        ReflectionTestUtils.setField(client, "email", "test@tiny-mesh.com");
+        MockitoAnnotations.initMocks(this);
+        in = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/deviceJSONTestData.json")));
+        Optional<String> optionalRespBody = in.lines().reduce(String::concat);
+        optionalRespBody.ifPresent(s -> respBody = s);
 
+        ResponseEntity<String> testEntity = new ResponseEntity<>(respBody, HttpStatus.OK);
+        Mockito.when(restTemplate.exchange(
+                anyString(),
+                eq(HttpMethod.GET),
+                any(),
+                Mockito.<Class<String>>any())
+        ).thenReturn(testEntity);
+    }
 
+    @After
+    public void teardown() throws IOException {
+        if (in != null) {
+            in.close();
+        }
+        in = null;
     }
 
     @Test
-    public void tinyMClientDevices(){
-
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", authHeader);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-
-        ResponseEntity<String> response = restTemplate.exchange("https://http.cloud.tiny-mesh.com/v2/device/T/", GET, entity, String.class);
-        System.out.println(response);
-
-        assertNotNull(response);
-
-        String matcher = response.getBody();
-        String type = "type";
-        String name = "name";
-        String key = "key";
-        String provisioned = "provisioned";
-        assertThat(matcher, containsString(type));
-        assertThat(matcher, containsString(name));
-        assertThat(matcher, containsString(key));
-        assertThat(matcher, containsString(provisioned));
-    }
-
-//    @Test
-    public void requestGetStatusOK() throws Exception {
-        mockMvc.perform(get("https://http.cloud.tiny-mesh.com/v2/device/T/"))
-                .andExpect(status().isOk())
-                .andDo(print());
+    public void requestDevices() throws Exception {
+        List<DoorSensorJSON> listOfObjects = client.requestDevices();
+        assertNotNull(listOfObjects);
+        assertTrue(listOfObjects.size() > 0);
+        assertEquals(listOfObjects.size(), 17);
     }
 
     @Test
-    public void tinyMClientDevicesChunckedRespones(){
-
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", authHeader);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-
-
-
-
-        ResponseEntity<String> response = restTemplate.exchange(
-                "https://http.cloud.tiny-mesh.com/v2/messages/T?date.from=NOW//-5MINUTE&data.encoding=hex&continuous=true&stream=true",
-                GET, entity, String.class);
-
-
-        System.out.println(response.toString());
-
-
-
-
-
-
+    public void syncDevices() {
+        int expectedNumberOfDevices = 16;
+        List<Device> deviceList = client.syncDevices();
+        assertNotNull(deviceList);
+        assertTrue("Returned list of devices should not be empty",deviceList.size() > 0);
+        assertEquals("Should ignore one of the devices",  expectedNumberOfDevices,deviceList.size());
     }
 }
