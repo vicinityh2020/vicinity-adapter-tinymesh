@@ -1,0 +1,371 @@
+[
+  {
+    "type": "gateway",
+    "provisioned": "active",
+    "proto/tm": {
+      "hardware": "2.00",
+      "firmware": "1.45"
+    },
+    "network": "T",
+    "name": "Mariann <3",
+    "meta": {
+      "updated": "2018-03-16T13:36:04.023Z",
+      "event/key": "1do-nqka-6a4o-6j1-VC9naWZvb1Z2ckhHQzI0=====",
+      "event/date": "2016-06-01T11:35:38.207Z",
+      "created": "2016-04-05T10:43:16.793Z",
+      "chan/disconnected": "2016-06-01T11:42:25.963Z",
+      "chan/connected": "2018-03-25T11:51:08.908Z"
+    },
+    "location": [],
+    "key": "gifooVvrHGC24",
+    "address": 268435456
+  },
+  {
+    "type": "building-sensor-v2",
+    "provisioned": "active",
+    "proto/tm": {
+      "hardware": "1.00",
+      "firmware": "1.45"
+    },
+    "network": "T",
+    "name": "Hall ved spiserom",
+    "meta": {
+      "updated": "2018-03-16T11:21:32.540Z",
+      "event/key": "1fj-e6pt-be6o-c6l-VC9naVhhcXBoZm9ONHBP",
+      "event/date": "2018-04-11T16:55:25.375Z",
+      "created": "2016-04-05T10:52:55.820Z"
+    },
+    "location": [
+      "country:NOR",
+      "city:moss",
+      "postcode:1532",
+      "address:kkegata 15",
+      "room:111",
+      "floor:1",
+      "windoworientation:"
+    ],
+    "key": "giXaqphfoN4pO",
+    "address": 2047148032
+  },
+  {
+    "type": "building-sensor-v2",
+    "provisioned": "active",
+    "proto/tm": {
+      "part": "TM1180-RS",
+      "hardware": "1.00",
+      "firmware": "1.45"
+    },
+    "network": "T",
+    "name": "Thorstein",
+    "meta": {
+      "updated": "2018-03-16T11:21:32.652Z",
+      "event/key": "1fj-e6qn-dta0-e6g-VC9naWoyamliWnJZQXpi",
+      "event/date": "2018-04-11T16:55:51.456Z",
+      "created": "2016-04-05T10:52:56.383Z"
+    },
+    "location": [
+      "country:NOR",
+      "city:moss",
+      "postcode:1532",
+      "address:LÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸kkegata 15",
+      "room:115",
+      "floor:1",
+      "windoworientation:s"
+    ],
+    "key": "gij2jibZrYAzb",
+    "address": 772079616
+  },
+  {
+    "type": "building-sensor-v2",
+    "provisioned": "active",
+    "proto/tm": {
+      "part": "TM1180-RS",
+      "hardware": "1.00",
+      "firmware": "1.45"
+    },
+    "network": "T",
+    "name": "Rolv & Harald",
+    "meta": {
+      "updated": "2018-03-19T09:53:00.663Z",
+      "event/key": "1fj-e6q8-edt8-eik-VC9naVk5QjYyNWx2ak1s",
+      "event/date": "2018-04-11T16:55:36.473Z",
+      "created": "2016-04-05T10:52:58.475Z"
+    },
+    "location": [
+      "country:NOR",
+      "city:moss",
+      "postcode:1532",
+      "address:LÃ¸kkegata 15",
+      "room:119",
+      "floor:1",
+      "windoworientation:n,e"
+    ],
+    "key": "giY9B625lvjMl",
+    "address": 738525184
+  },
+  {
+    "type": "building-sensor-v2",
+    "provisioned": "active",
+    "proto/tm": {
+      "part": "TM1180-RS",
+      "hardware": "1.00",
+      "firmware": "1.45"
+    },
+    "network": "T",
+    "name": "HQ",
+    "meta": {
+      "updated": "2018-03-19T09:53:04.813Z",
+      "event/key": "1fj-e6qg-cr48-89d-VC9naWpNRzg5T3RtMnQz",
+      "event/date": "2018-04-11T16:55:44.421Z",
+      "created": "2016-04-05T10:57:57.024Z"
+    },
+    "location": [
+      "country:NOR",
+      "city:moss",
+      "postcode:1532",
+      "address:LÃ¸kkegata 15",
+      "room:118",
+      "floor:1",
+      "windoworientation:n"
+    ],
+    "key": "gijMG89Otm2t3",
+    "address": 839188480
+  },
+  {
+    "type": "building-sensor-v2",
+    "provisioned": "active",
+    "proto/tm": {
+      "part": "TM1180-RS",
+      "hardware": "1.00",
+      "firmware": "1.45"
+    },
+    "network": "T",
+    "name": "Yttergang",
+    "meta": {
+      "updated": "2018-03-19T09:53:08.736Z",
+      "event/key": "1fj-e6pd-5bs0-c6u-VC9naWZtbkZ0QUZUTVFK",
+      "event/date": "2018-04-11T16:55:09.176Z",
+      "created": "2016-04-05T11:40:44.835Z"
+    },
+    "location": [
+      "country:NOR",
+      "city:moss",
+      "postcode:1532",
+      "address:LÃ¸kkegata 15",
+      "room:110",
+      "floor:1",
+      "windoworientation:w"
+    ],
+    "key": "gifmnFtAFTMQJ",
+    "address": 1107623936
+  },
+  {
+    "type": "building-sensor-v2",
+    "provisioned": "active",
+    "proto/tm": {
+      "hardware": "1.00",
+      "firmware": "1.45"
+    },
+    "network": "T",
+    "name": "Spiserom",
+    "meta": {
+      "updated": "2018-03-19T09:53:13.394Z",
+      "event/key": "1fj-845f-m21o-enl-VC9naVZkVGRLbkRDZnNE",
+      "event/date": "2018-04-09T09:33:35.723Z",
+      "created": "2016-04-05T12:46:04.935Z"
+    },
+    "location": [
+      "country:NOR",
+      "city:moss",
+      "postcode:1532",
+      "address:LÃ¸kkegata 15",
+      "room:116",
+      "floor:1",
+      "windoworientation:e"
+    ],
+    "key": "giVdTdKnDCfsD",
+    "address": 688193536
+  },
+  {
+    "type": "building-sensor-v2",
+    "provisioned": "active",
+    "proto/tm": {
+      "hardware": "2.00",
+      "firmware": "1.00"
+    },
+    "network": "T",
+    "name": "Remmen - rom A2-206 - test",
+    "meta": {
+      "updated": "2018-03-19T09:53:17.758Z",
+      "event/key": "1ee-dotk-7rug-dss-VC9naWNuMTVTUDhTWVhh",
+      "event/date": "2017-02-07T07:11:48.258Z",
+      "created": "2016-07-11T09:07:37.105Z"
+    },
+    "location": [],
+    "key": "gicn15SP8SYXa",
+    "address": 2802122752
+  },
+  {
+    "type": "building-sensor-v2",
+    "provisioned": "active",
+    "proto/tm": {
+      "hardware": "1.00",
+      "firmware": "1.45"
+    },
+    "network": "T",
+    "name": "Kalnes - rom AC201A - test",
+    "meta": {
+      "updated": "2018-03-19T09:53:22.033Z",
+      "event/key": "1dt-gih1-ublo-e0u-VC9naWd2Tkdya1o3OUt4=====",
+      "event/date": "2016-07-26T14:27:45.995Z",
+      "created": "2016-07-11T09:10:17.259Z"
+    },
+    "location": [],
+    "key": "gigvNGrkZ79Kx",
+    "address": 1694826496
+  },
+  {
+    "type": "building-sensor-v2",
+    "provisioned": "active",
+    "proto/tm": {
+      "hardware": "1.00",
+      "firmware": "1.45"
+    },
+    "network": "T",
+    "name": "Kalnes test",
+    "meta": {
+      "updated": "2018-03-19T09:53:26.860Z",
+      "event/key": "1e0-oil0-cbg8-40r-VC9naWY1WmRsTVhHWDBj=====",
+      "event/date": "2016-09-02T08:38:56.405Z",
+      "created": "2016-09-02T08:27:02.456Z"
+    },
+    "location": [],
+    "key": "gif5ZdlMXGX0c",
+    "address": 822411264
+  },
+  {
+    "type": "device",
+    "provisioned": "active",
+    "proto/tm": {
+      "hardware": "1.00",
+      "firmware": "1.46"
+    },
+    "network": "T",
+    "meta": {
+      "updated": "2018-03-19T09:53:30.398Z",
+      "event/key": "1e6-o3k9-ano-7nu-VC9naW1nb1I5dzNsZDVX",
+      "event/date": "2016-11-10T15:02:33.011Z",
+      "created": "2016-11-10T15:02:33.012Z"
+    },
+    "location": [],
+    "key": "gimgoR9w3ld5W",
+    "address": 872742912
+  },
+  {
+    "type": "device",
+    "provisioned": "active",
+    "proto/tm": {
+      "hardware": "2.00",
+      "firmware": "2.01"
+    },
+    "network": "T",
+    "meta": {
+      "updated": "2018-03-19T09:53:34.128Z",
+      "event/key": "1eg-ois3-jg0o-2jb-VC9naWVQa25UZkw4OUFP",
+      "event/date": "2017-03-06T13:09:23.639Z",
+      "created": "2017-01-19T09:18:23.396Z"
+    },
+    "location": [],
+    "key": "giePknTfL89AO",
+    "address": 2113929216
+  },
+  {
+    "type": "building-sensor-v3",
+    "provisioned": "active",
+    "proto/tm": {
+      "hardware": "2.00",
+      "firmware": "2.01"
+    },
+    "network": "T",
+    "name": "Test D - 299 sek CO2, 10 min intervall",
+    "meta": {
+      "updated": "2018-03-19T09:53:37.890Z",
+      "event/key": "1en-ascv-afu0-ast-VC9naVpsbFRQSG94dHJp",
+      "event/date": "2017-05-21T08:52:47.344Z",
+      "created": "2017-03-17T15:11:59.542Z"
+    },
+    "location": [],
+    "key": "giZllTPHoxtri",
+    "address": 1107689472
+  },
+  {
+    "type": "building-sensor-v3",
+    "provisioned": "active",
+    "proto/tm": {
+      "hardware": "2.00",
+      "firmware": "2.01"
+    },
+    "network": "T",
+    "name": "Test C - 299 sek CO2, 5 min intervall",
+    "meta": {
+      "updated": "2018-03-19T09:53:41.660Z",
+      "event/key": "1eq-e4h3-kl48-2gi-VC9naWVFRVdSS2U1VnF1",
+      "event/date": "2017-06-26T07:49:55.677Z",
+      "created": "2017-03-17T15:14:45.750Z"
+    },
+    "location": [],
+    "key": "gieEEWRKe5Vqu",
+    "address": 1090912256
+  },
+  {
+    "type": "building-sensor-v3",
+    "provisioned": "active",
+    "proto/tm": {
+      "hardware": "2.00",
+      "firmware": "2.01"
+    },
+    "network": "T",
+    "name": "Test A - 119 sek CO2, 5 min intervall",
+    "meta": {
+      "updated": "2018-03-19T09:53:46.782Z",
+      "event/key": "1eq-e4hm-rgrg-8ko-VC9naW1sTmVmd2lkZjVX",
+      "event/date": "2017-06-26T07:50:14.902Z",
+      "created": "2017-03-17T15:16:53.702Z"
+    },
+    "location": [],
+    "key": "gimlNefwidf5W",
+    "address": 1057357824
+  },
+  {
+    "type": "building-sensor-v3",
+    "provisioned": "active",
+    "proto/tm": {
+      "hardware": "2.00",
+      "firmware": "2.01"
+    },
+    "network": "T",
+    "name": "Test B - 119 sek CO2, 10 min intervall",
+    "meta": {
+      "updated": "2018-03-19T09:53:50.760Z",
+      "event/key": "1eq-6jok-djhg-511-VC9naWRLYVl0SHZVVk9v",
+      "event/date": "2017-06-23T11:20:52.446Z",
+      "created": "2017-03-17T15:17:58.369Z"
+    },
+    "location": [],
+    "key": "gidKaYtHvUVOo",
+    "address": 1074135040
+  },
+  {
+    "type": "gateway",
+    "provisioned": "active",
+    "network": "T",
+    "name": "GPRS Demo",
+    "meta": {
+      "updated": "2017-09-22T13:40:10.094Z",
+      "created": "2017-09-22T13:40:10.094Z",
+      "chan/connected": "2017-11-13T22:10:32.968Z"
+    },
+    "key": "gim2gGGrJlLxM",
+    "address": 2122219134
+  }
+]

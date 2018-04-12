@@ -3,12 +3,13 @@ package com.tinymesh.vicinity.adapter.client;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tinymesh.vicinity.adapter.database.Device;
-import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
-import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensor;
 import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensorJSON;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,7 +19,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 
 import static org.springframework.http.HttpMethod.GET;
 
@@ -43,6 +43,9 @@ public class TinyMClient {
     public List<Device> syncDevices(){
         List<DoorSensorJSON> devices = this.requestDevices();
         List<Device> deviceObjects = new ArrayList<>();
+
+        //filter out devices that are not provisioned as per description in T330
+        //and creates Device objects suitable for DB
         devices.stream().filter(device -> device.getProvisioned().equals("active")).forEach(device -> {
             String deviceURL = baseURL + "/v2/device/" + device.getNetwork() + "/" + device.getKey();
             deviceObjects.add(new Device(device.getName(), device.getType(), UUID.randomUUID(), LocalDateTime.now(), true, deviceURL));
