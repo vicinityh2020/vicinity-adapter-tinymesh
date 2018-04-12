@@ -79,7 +79,7 @@ public class ObjectsApiController {
             objectInfo.setEvents(new ArrayList<>());
 
             LinkInfo linkInfo = new LinkInfo();
-            linkInfo.setHref("properties/state");
+            linkInfo.setHref("/objects/" + device.getUuid() + "/properties/status");
             linkInfo.setMediaType("application/json");
             OutputSchema outputSchema = new OutputSchema();
             outputSchema.setDatatype("boolean");
