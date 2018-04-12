@@ -1,5 +1,6 @@
 package com.tinymesh.vicinity.adapter.client;
 
+import com.tinymesh.vicinity.adapter.database.Device;
 import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensorJSON;
 import org.junit.After;
 import org.junit.Before;
@@ -22,6 +23,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
@@ -46,6 +48,14 @@ public class TinyMClientTest {
         in = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/deviceJSONTestData.json")));
         Optional<String> optionalRespBody = in.lines().reduce(String::concat);
         optionalRespBody.ifPresent(s -> respBody = s);
+
+        ResponseEntity<String> testEntity = new ResponseEntity<>(respBody, HttpStatus.OK);
+        Mockito.when(restTemplate.exchange(
+                anyString(),
+                eq(HttpMethod.GET),
+                any(),
+                Mockito.<Class<String>>any())
+        ).thenReturn(testEntity);
     }
 
     @After
@@ -58,23 +68,18 @@ public class TinyMClientTest {
 
     @Test
     public void requestDevices() throws Exception {
-        ResponseEntity<String> testEntity = new ResponseEntity<>(respBody, HttpStatus.OK);
-        Mockito.when(restTemplate.exchange(
-                anyString(),
-                eq(HttpMethod.GET),
-                any(),
-                Mockito.<Class<String>>any())
-        ).thenReturn(testEntity);
         List<DoorSensorJSON> listOfObjects = client.requestDevices();
         assertNotNull(listOfObjects);
         assertTrue(listOfObjects.size() > 0);
-    }
-
-    @Test
-    public void tinyMClientDevicesChunckedRespones() {
+        assertEquals(listOfObjects.size(), 17);
     }
 
     @Test
     public void syncDevices() {
+        int expectedNumberOfDevices = 16;
+        List<Device> deviceList = client.syncDevices();
+        assertNotNull(deviceList);
+        assertTrue("Returned list of devices should not be empty",deviceList.size() > 0);
+        assertEquals("Should ignore one of the devices",  expectedNumberOfDevices,deviceList.size());
     }
 }

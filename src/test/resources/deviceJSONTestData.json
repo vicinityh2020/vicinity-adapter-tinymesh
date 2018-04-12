@@ -1,7 +1,7 @@
 [
   {
     "type": "gateway",
-    "provisioned": "active",
+    "provisioned": "inactive",
     "proto/tm": {
       "hardware": "2.00",
       "firmware": "1.45"
