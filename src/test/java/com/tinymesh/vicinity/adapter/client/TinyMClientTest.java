@@ -54,6 +54,7 @@ public class TinyMClientTest {
 
 
         ResponseEntity<String> response = restTemplate.exchange("https://http.cloud.tiny-mesh.com/v2/device/T/", GET, entity, String.class);
+        System.out.println(response);
 
         assertNotNull(response);
 
@@ -87,12 +88,13 @@ public class TinyMClientTest {
 
 
 
-/*
+
         ResponseEntity<String> response = restTemplate.exchange(
                 "https://http.cloud.tiny-mesh.com/v2/messages/T?date.from=NOW//-5MINUTE&data.encoding=hex&continuous=true&stream=true",
                 GET, entity, String.class);
- */
 
+
+        System.out.println(response.toString());
 
 
 
