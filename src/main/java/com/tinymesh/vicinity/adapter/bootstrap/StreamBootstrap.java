@@ -1,5 +1,5 @@
 package com.tinymesh.vicinity.adapter.bootstrap;
-import com.tinymesh.vicinity.adapter.client.StreamTinyMCloud;
+import com.tinymesh.vicinity.adapter.client.TinyMStreamClient;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class StreamBootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
-    private StreamTinyMCloud streamTinyMCloud;
+    private TinyMStreamClient tinyMStreamClient;
 
-    public StreamBootstrap(StreamTinyMCloud streamTinyMCloud) {
-        this.streamTinyMCloud = streamTinyMCloud;
+    public StreamBootstrap(TinyMStreamClient tinyMStreamClient) {
+        this.tinyMStreamClient = tinyMStreamClient;
     }
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        streamTinyMCloud.printStreamedMessages();
+        tinyMStreamClient.printStreamedMessages();
     }
 }

@@ -1,19 +1,9 @@
 package com.tinymesh.vicinity.adapter.bootstrap;
 
-import com.tinymesh.vicinity.adapter.client.StreamTinyMCloud;
 import com.tinymesh.vicinity.adapter.client.TinyMClient;
-import com.tinymesh.vicinity.adapter.database.Device;
-import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
-import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensorJSON;
-import org.springframework.beans.factory.annotation.Value;
+import com.tinymesh.vicinity.adapter.repository.DeviceDataHandler;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 //@Component
 public class ObjectBootstrap implements ApplicationListener<ContextRefreshedEvent>{

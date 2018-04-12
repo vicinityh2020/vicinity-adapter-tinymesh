@@ -1,9 +1,8 @@
 package com.tinymesh.vicinity.adapter.controller;
 
-import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
-import com.tinymesh.vicinity.adapter.database.Device;
-import com.tinymesh.vicinity.adapter.database.DeviceUtilDataHandler;
-import com.tinymesh.vicinity.adapter.database.DeviceUtilization;
+import com.tinymesh.vicinity.adapter.repository.DeviceDataHandler;
+import com.tinymesh.vicinity.adapter.entity.Device;
+import com.tinymesh.vicinity.adapter.entity.DeviceUtilization;
 import com.tinymesh.vicinity.adapter.model.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,12 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 public class ObjectsApiController {

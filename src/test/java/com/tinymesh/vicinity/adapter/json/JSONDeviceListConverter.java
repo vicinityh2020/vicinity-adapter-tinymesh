@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.tinymesh.vicinity.adapter.database.Device;
+import com.tinymesh.vicinity.adapter.entity.Device;
 import org.junit.Test;
 
 import java.io.IOException;
