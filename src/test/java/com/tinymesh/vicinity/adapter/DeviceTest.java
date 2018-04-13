@@ -1,10 +1,10 @@
 package com.tinymesh.vicinity.adapter;
 
 import com.tinymesh.vicinity.adapter.controller.ObjectsApiController;
-import com.tinymesh.vicinity.adapter.database.Device;
-import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
-import com.tinymesh.vicinity.adapter.database.DeviceUtilDataHandler;
-import com.tinymesh.vicinity.adapter.database.DeviceUtilization;
+import com.tinymesh.vicinity.adapter.entity.Device;
+import com.tinymesh.vicinity.adapter.repository.DeviceDataHandler;
+import com.tinymesh.vicinity.adapter.repository.DeviceUtilDataHandler;
+import com.tinymesh.vicinity.adapter.entity.DeviceUtilization;
 import com.tinymesh.vicinity.adapter.model.ObjectInfo;
 import org.junit.Before;
 import org.junit.Test;
