@@ -39,7 +39,7 @@ public class StreamTinyMCloud {
         return webClient.get()
                 .uri(streamMessagesUri)
                 .header("Authorization", "Basic " + Base64Utils
-                        .encodeToString((email + ":" + pass).getBytes(Charset.forName("US-ASCII"))))
+                .encodeToString((email + ":" + pass).getBytes(Charset.forName("US-ASCII"))))
                 .retrieve()
                 .bodyToFlux(String.class);
     }
