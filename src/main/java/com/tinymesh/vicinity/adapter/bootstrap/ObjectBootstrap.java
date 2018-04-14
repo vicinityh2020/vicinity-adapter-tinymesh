@@ -4,8 +4,9 @@ import com.tinymesh.vicinity.adapter.client.TinyMClient;
 import com.tinymesh.vicinity.adapter.repository.DeviceDataHandler;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.stereotype.Component;
 
-//@Component
+@Component
 public class ObjectBootstrap implements ApplicationListener<ContextRefreshedEvent>{
     private TinyMClient tinyMClient;
 

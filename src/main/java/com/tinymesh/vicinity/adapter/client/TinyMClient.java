@@ -49,7 +49,13 @@ public class TinyMClient {
         //and creates Device objects suitable for DB
         devices.stream().filter(device -> device.getProvisioned().equals("active")).forEach(device -> {
             final String deviceURL = String.format("%s/%s/%s/%s", baseURL, endpointDevice, device.getNetwork(), device.getKey());
-            deviceObjects.add(new Device(device.getName(), device.getType(), UUID.randomUUID(), LocalDateTime.now(), true, deviceURL));
+            deviceObjects.add(new Device(
+                    device.getName(),
+                    device.getType(),
+                    UUID.randomUUID(),
+                    LocalDateTime.now(),
+                    true, deviceURL,
+                    device.getAddress()));
         });
         return deviceObjects;
     }
