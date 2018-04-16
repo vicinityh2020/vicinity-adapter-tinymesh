@@ -4,7 +4,7 @@ import com.tinymesh.vicinity.adapter.client.TinyMClient;
 import com.tinymesh.vicinity.adapter.entity.Device;
 import com.tinymesh.vicinity.adapter.entity.DeviceUtilization;
 import com.tinymesh.vicinity.adapter.model.*;
-import com.tinymesh.vicinity.adapter.repository.DeviceDataHandler;
+import com.tinymesh.vicinity.adapter.repository.DeviceRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +17,11 @@ import java.util.*;
 public class ObjectsApiController {
 
     private TinyMClient tinyMClient;
+    private DeviceRepository deviceRepository;
     private static Map<UUID, ObjectInfo> objects = new HashMap<>();
 
-    public ObjectsApiController(TinyMClient tinyMClient) {
+    public ObjectsApiController(TinyMClient tinyMClient, DeviceRepository deviceRepository) {
+        this.deviceRepository = deviceRepository;
         this.tinyMClient = tinyMClient;
     }
 
@@ -111,8 +113,7 @@ public class ObjectsApiController {
     public ResponseEntity<List<ObjectInfo>> getObjects() {
 
         List<ObjectInfo> objectList;
-        DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
-        List<Device> deviceList = deviceDataHandler.retrieveData();
+        List<Device> deviceList = deviceRepository.findAll();
         objectList = mapDeviceDataToObjectInfo(deviceList);
         return new ResponseEntity<>(objectList, HttpStatus.OK);
     }

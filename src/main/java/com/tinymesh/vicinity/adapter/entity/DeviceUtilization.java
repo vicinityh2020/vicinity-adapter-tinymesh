@@ -1,6 +1,5 @@
 package com.tinymesh.vicinity.adapter.entity;
 
-import com.tinymesh.vicinity.adapter.repository.IDeviceUtilization;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -10,7 +9,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "deviceutilization")
-public class DeviceUtilization implements IDeviceUtilization {
+public class DeviceUtilization {
 
     @Id
     @GenericGenerator(name = "system-uuid", strategy = "uuid")

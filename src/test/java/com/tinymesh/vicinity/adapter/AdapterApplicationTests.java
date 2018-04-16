@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tinymesh.vicinity.adapter.controller.ObjectsApiController;
 import com.tinymesh.vicinity.adapter.entity.Device;
 import com.tinymesh.vicinity.adapter.repository.DeviceDataHandler;
+import com.tinymesh.vicinity.adapter.repository.DeviceRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,6 +46,9 @@ public class AdapterApplicationTests {
 	@Autowired
 	private MockMvc mockMvc;
 
+	@Autowired
+	private DeviceRepository deviceRepository;
+
 	private HttpMessageConverter mappingJackson2HttpMessageConverter;
 
 	@Autowired
@@ -68,9 +72,8 @@ public class AdapterApplicationTests {
     @Repeat(3)
 	public void getAllObjects() throws Exception {
 		List<Device> deviceList =  new ArrayList<>();
-		deviceList.add(new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com", 1));
-		DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
-		deviceDataHandler.setData(deviceList);
+		deviceList.add(new Device("Device123","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com", 1));
+        deviceRepository.saveAll(deviceList);
 
         mockMvc.perform(get("/objects"))
 				.andExpect(status().isOk())

@@ -4,7 +4,7 @@ import com.tinymesh.vicinity.adapter.controller.ObjectsApiController;
 import com.tinymesh.vicinity.adapter.entity.Device;
 import com.tinymesh.vicinity.adapter.entity.DeviceUtilization;
 import com.tinymesh.vicinity.adapter.model.ObjectInfo;
-import com.tinymesh.vicinity.adapter.repository.DeviceDataHandler;
+import com.tinymesh.vicinity.adapter.repository.DeviceRepository;
 import com.tinymesh.vicinity.adapter.repository.DeviceUtilDataHandler;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,12 +18,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.tinymesh.vicinity.adapter.controller.ObjectsApiController.mapDeviceDataToObjectInfo;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 public class DeviceTest {
     @Autowired
     private ObjectsApiController objectsApiController;
+
+    @Autowired
+    private DeviceRepository deviceRepository;
+
     ObjectInfo objectInfo = new ObjectInfo();
     @ElementCollection
     private List<Device> deviceList =  new ArrayList<>();
@@ -36,14 +41,11 @@ public class DeviceTest {
 
     @Test
     public void getAllObjects() {
-
         deviceList.add(new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com", 1));
         deviceList.add(new Device("Device2","Sensor", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com", 1));
-        DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
-        deviceDataHandler.setData(deviceList);
+        deviceRepository.saveAll(deviceList);
 
-
-        List<ObjectInfo> objectInfoList = objectsApiController.mapDeviceDataToObjectInfo(deviceList);
+        List<ObjectInfo> objectInfoList = mapDeviceDataToObjectInfo(deviceList);
         Device fstDevice = deviceList.get(1);
         ObjectInfo fstObjInfo = objectInfoList.get(1);
 
