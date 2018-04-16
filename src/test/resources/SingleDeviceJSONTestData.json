@@ -1,0 +1,21 @@
+{
+  "type": "gateway",
+  "provisioned": "active",
+  "proto/tm": {
+    "hardware": "2.00",
+    "firmware": "1.45"
+  },
+  "network": "T",
+  "name": "Mariann <3",
+  "meta": {
+    "updated": "2018-03-16T13:36:04.023Z",
+    "event/key": "1do-nqka-6a4o-6j1-VC9naWZvb1Z2ckhHQzI0=====",
+    "event/date": "2016-06-01T11:35:38.207Z",
+    "created": "2016-04-05T10:43:16.793Z",
+    "chan/disconnected": "2016-06-01T11:42:25.963Z",
+    "chan/connected": "2018-03-25T11:51:08.908Z"
+  },
+  "location": [],
+  "key": "gifooVvrHGC24",
+  "address": 268435456
+}

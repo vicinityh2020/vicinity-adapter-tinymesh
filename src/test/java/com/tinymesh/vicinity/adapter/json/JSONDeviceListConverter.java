@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.tinymesh.vicinity.adapter.database.Device;
+import com.tinymesh.vicinity.adapter.entity.Device;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 public class JSONDeviceListConverter {
 
-    Device device1 = new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
+    Device device1 = new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com", 1);
 
     @Test
     public void convertDeviceListToJson ()throws IOException
@@ -27,8 +27,8 @@ public class JSONDeviceListConverter {
 
         //Defining map which will be converted to JSON
         List<Device> deviceList = Stream.of(
-                new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"),
-                new Device("Device2","Sensor2", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com"))
+                new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com", 1),
+                new Device("Device2","Sensor2", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com", 1))
                 .collect(Collectors.toList());
 
 

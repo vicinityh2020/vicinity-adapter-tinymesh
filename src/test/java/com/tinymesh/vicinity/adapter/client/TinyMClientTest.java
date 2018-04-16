@@ -1,7 +1,8 @@
 package com.tinymesh.vicinity.adapter.client;
 
-import com.tinymesh.vicinity.adapter.database.Device;
-import com.tinymesh.vicinity.adapter.jsonmodels.DoorSensorJSON;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tinymesh.vicinity.adapter.entity.Device;
+import com.tinymesh.vicinity.adapter.model.DoorSensorJSON;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +31,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TinyMClientTest {
-    private BufferedReader in = null;
+    private BufferedReader in;
     private String respBody;
 
     @Mock
@@ -45,17 +46,6 @@ public class TinyMClientTest {
         ReflectionTestUtils.setField(client, "pass", "***REMOVED***");
         ReflectionTestUtils.setField(client, "email", "test@tiny-mesh.com");
         MockitoAnnotations.initMocks(this);
-        in = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/deviceJSONTestData.json")));
-        Optional<String> optionalRespBody = in.lines().reduce(String::concat);
-        optionalRespBody.ifPresent(s -> respBody = s);
-
-        ResponseEntity<String> testEntity = new ResponseEntity<>(respBody, HttpStatus.OK);
-        Mockito.when(restTemplate.exchange(
-                anyString(),
-                eq(HttpMethod.GET),
-                any(),
-                Mockito.<Class<String>>any())
-        ).thenReturn(testEntity);
     }
 
     @After
@@ -68,6 +58,22 @@ public class TinyMClientTest {
 
     @Test
     public void requestDevices() throws Exception {
+
+        in = new BufferedReader(new InputStreamReader(
+                getClass().getResourceAsStream("/deviceJSONTestData.json")));
+
+        Optional<String> optionalRespBody = in.lines().reduce(String::concat);
+        optionalRespBody.ifPresent(s -> respBody = s);
+
+        ResponseEntity<String> testEntity = new ResponseEntity<>(respBody, HttpStatus.OK);
+
+        Mockito.when(restTemplate.exchange(
+                anyString(),
+                eq(HttpMethod.GET),
+                any(),
+                Mockito.<Class<String>>any())
+        ).thenReturn(testEntity);
+
         List<DoorSensorJSON> listOfObjects = client.requestDevices();
         assertNotNull(listOfObjects);
         assertTrue(listOfObjects.size() > 0);
@@ -75,11 +81,52 @@ public class TinyMClientTest {
     }
 
     @Test
+    public void requestSingleDevice() throws Exception {
+        in = new BufferedReader(new InputStreamReader(
+                getClass().getResourceAsStream("/SingleDeviceJSONTestData.json")));
+
+        Optional<String> optionalRespBody = in.lines().reduce(String::concat);
+        optionalRespBody.ifPresent(s -> respBody = s);
+        ObjectMapper objectMapper = new ObjectMapper();
+        DoorSensorJSON expectedResponseObject = objectMapper.readValue(respBody, DoorSensorJSON.class);
+        ResponseEntity<String> testEntity = new ResponseEntity<>(respBody, HttpStatus.OK);
+
+        final String testKey = "gifooVvrHGC24";
+
+        Mockito.when(restTemplate.exchange(
+                contains(testKey),
+                eq(HttpMethod.GET),
+                any(),
+                Mockito.<Class<String>>any())
+        ).thenReturn(testEntity);
+
+        DoorSensorJSON singleDevice = client.requestDevice(testKey);
+        assertEquals(expectedResponseObject, singleDevice);
+        assertNotNull(singleDevice);
+    }
+
+    @Test
     public void syncDevices() {
+
+        in = new BufferedReader(new InputStreamReader(
+                getClass().getResourceAsStream("/deviceJSONTestData.json")));
+
+        Optional<String> optionalRespBody = in.lines().reduce(String::concat);
+        optionalRespBody.ifPresent(s -> respBody = s);
+
+        ResponseEntity<String> testEntity = new ResponseEntity<>(respBody, HttpStatus.OK);
+
+        Mockito.when(restTemplate.exchange(
+                anyString(),
+                eq(HttpMethod.GET),
+                any(),
+                Mockito.<Class<String>>any())
+        ).thenReturn(testEntity);
+
         int expectedNumberOfDevices = 16;
         List<Device> deviceList = client.syncDevices();
         assertNotNull(deviceList);
-        assertTrue("Returned list of devices should not be empty",deviceList.size() > 0);
-        assertEquals("Should ignore one of the devices",  expectedNumberOfDevices,deviceList.size());
+        assertTrue("Returned list of devices should not be empty", deviceList.size() > 0);
+        assertEquals("Should ignore one of the devices", expectedNumberOfDevices, deviceList.size());
     }
 }

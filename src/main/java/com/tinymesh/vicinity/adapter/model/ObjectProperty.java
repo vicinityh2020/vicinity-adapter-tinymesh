@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
+
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 

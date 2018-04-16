@@ -2,8 +2,8 @@ package com.tinymesh.vicinity.adapter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tinymesh.vicinity.adapter.controller.ObjectsApiController;
-import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
-import com.tinymesh.vicinity.adapter.database.Device;
+import com.tinymesh.vicinity.adapter.entity.Device;
+import com.tinymesh.vicinity.adapter.repository.DeviceDataHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,7 +68,7 @@ public class AdapterApplicationTests {
     @Repeat(3)
 	public void getAllObjects() throws Exception {
 		List<Device> deviceList =  new ArrayList<>();
-		deviceList.add(new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"));
+		deviceList.add(new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com", 1));
 		DeviceDataHandler deviceDataHandler = DeviceDataHandler.getInstance();
 		deviceDataHandler.setData(deviceList);
 
@@ -109,8 +109,8 @@ public class AdapterApplicationTests {
 	//Checking if status OK when we GET from Object Property
     public void checkGetStatusOK() throws Exception{
 		List<Device> deviceList = Stream.of(
-				new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"),
-				new Device("Device2","Sensor2", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com"))
+				new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com", 1),
+				new Device("Device2","Sensor2", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com", 1))
 				.collect(Collectors.toList());
 
 		mockMvc.perform(get("/objects/{uuid}/properties/getState", deviceList.get(0).getUuid()))    //).param("uuid", uuid.toString()))
@@ -121,8 +121,8 @@ public class AdapterApplicationTests {
 	//Checking if Status NOT FOUND when we GET with wrong pid from Object Property
 	public void checkGetStatusNOT_FOUND() throws Exception{
 		List<Device> deviceList = Stream.of(
-				new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com"),
-				new Device("Device2","Sensor2", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com"))
+				new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com", 1),
+				new Device("Device2","Sensor2", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com", 1))
 				.collect(Collectors.toList());
 
 		mockMvc.perform(get("/objects/{uuid}/properties/NOT_FOUND", deviceList.get(0).getUuid()))    //).param("uuid", uuid.toString()))
@@ -133,7 +133,7 @@ public class AdapterApplicationTests {
 	//Checking Status is OK, when we PUT to Object Property
 	public void checkSetStatusOK() throws Exception {
 
-        Device device = new Device("Device1", "Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
+        Device device = new Device("Device1", "Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com", 1);
 
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(device);
@@ -153,7 +153,7 @@ public class AdapterApplicationTests {
         //Testing if Status NOT FOUND when we PUT with wrong pid to Object Property
         public void checkSetStatusNOT_FOUND () throws Exception {
 
-            Device device = new Device("Device1", "Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
+            Device device = new Device("Device1", "Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com", 1);
 
             ObjectMapper mapper = new ObjectMapper();
             String json = mapper.writeValueAsString(device);
@@ -174,7 +174,7 @@ public class AdapterApplicationTests {
     //Checking Status is OK, when we GET from Action
     public void checkGetActionStatusOK () throws Exception {
 
-        Device device = new Device("Device1", "Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
+        Device device = new Device("Device1", "Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com", 1);
 
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(device);
@@ -194,7 +194,7 @@ public class AdapterApplicationTests {
     //Checking Status is NOT_FOUND, when we GET from Action
     public void checkGetActionStatusNOT_FOUND () throws Exception {
 
-        Device device = new Device("Device1", "Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
+        Device device = new Device("Device1", "Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com", 1);
 
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(device);
@@ -215,7 +215,7 @@ public class AdapterApplicationTests {
     //Checking Status is OK, when we PUT to Action
     public void checkPutActionStatusOK() throws Exception {
 
-        Device device = new Device("Device1", "Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
+        Device device = new Device("Device1", "Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com", 1);
 
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(device);
@@ -235,7 +235,7 @@ public class AdapterApplicationTests {
     //Testing if Status NOT FOUND when we PUT with wrong aid to Action
     public void checkPutActionStatusNOT_FOUND() throws Exception {
 
-        Device device = new Device("Device1", "Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com");
+        Device device = new Device("Device1", "Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com", 1);
 
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(device);

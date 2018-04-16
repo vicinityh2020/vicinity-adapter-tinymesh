@@ -14,11 +14,11 @@
 		<!-- Log SQL queries -->
 		<property name="format_sql">true</property>
 		<property name="use_sql_comments">true</property>
-		<!-- Drop and re-create the database schema on startup -->
+		<!-- Drop and re-create the entity schema on startup -->
 		<property name="hbm2ddl.auto">create</property>
 		<!-- MAPPINGS -->
-		<mapping class="com.tinymesh.vicinity.adapter.database.Device"/>
-		<mapping class="com.tinymesh.vicinity.adapter.database.DeviceUtilization"/>
+		<mapping class="com.tinymesh.vicinity.adapter.entity.Device"/>
+		<mapping class="com.tinymesh.vicinity.adapter.entity.DeviceUtilization"/>
 
 	</session-factory>
 </hibernate-configuration>

@@ -1,27 +1,27 @@
 package com.tinymesh.vicinity.adapter.controller;
 
-import com.tinymesh.vicinity.adapter.database.DeviceDataHandler;
-import com.tinymesh.vicinity.adapter.database.Device;
-import com.tinymesh.vicinity.adapter.database.DeviceUtilDataHandler;
-import com.tinymesh.vicinity.adapter.database.DeviceUtilization;
+import com.tinymesh.vicinity.adapter.client.TinyMClient;
+import com.tinymesh.vicinity.adapter.entity.Device;
+import com.tinymesh.vicinity.adapter.entity.DeviceUtilization;
 import com.tinymesh.vicinity.adapter.model.*;
+import com.tinymesh.vicinity.adapter.repository.DeviceDataHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 public class ObjectsApiController {
 
+    private TinyMClient tinyMClient;
     private static Map<UUID, ObjectInfo> objects = new HashMap<>();
+
+    public ObjectsApiController(TinyMClient tinyMClient) {
+        this.tinyMClient = tinyMClient;
+    }
 
     public Map getHashmapObjects() {
         return objects;
@@ -79,7 +79,7 @@ public class ObjectsApiController {
             objectInfo.setEvents(new ArrayList<>());
 
             LinkInfo linkInfo = new LinkInfo();
-            linkInfo.setHref("properties/state");
+            linkInfo.setHref("/objects/" + device.getUuid() + "/properties/status");
             linkInfo.setMediaType("application/json");
             OutputSchema outputSchema = new OutputSchema();
             outputSchema.setDatatype("boolean");
@@ -99,6 +99,12 @@ public class ObjectsApiController {
         }
 
         return items;
+    }
+
+    @RequestMapping(value = "/objects/{oid}",method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<DoorSensorJSON> getObject(@PathVariable String oid) {
+        DoorSensorJSON device = tinyMClient.requestDevice(oid);
+        return new ResponseEntity<>(device, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/objects", method = RequestMethod.GET, produces = "application/json")
