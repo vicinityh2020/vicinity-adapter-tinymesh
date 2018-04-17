@@ -5,16 +5,29 @@ import com.tinymesh.vicinity.adapter.entity.Device;
 import com.tinymesh.vicinity.adapter.entity.DeviceUtilization;
 import com.tinymesh.vicinity.adapter.model.*;
 import com.tinymesh.vicinity.adapter.repository.DeviceRepository;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+import static java.util.Collections.singletonList;
+
+import java.sql.Timestamp;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.chrono.ChronoLocalDate;
+import java.time.temporal.ChronoField;
 import java.util.*;
 
 @RestController
 public class ObjectsApiController {
+
+    // TODO: reorganize lambda in GET/ objects/{oid}/properties/{pid}
+    private Device device;
 
     private TinyMClient tinyMClient;
     private DeviceRepository deviceRepository;
@@ -121,17 +134,53 @@ public class ObjectsApiController {
     @RequestMapping(value = "/objects/{oid}/properties/{pid}",
                     method = RequestMethod.GET,
                     produces = "application/json")
-    public ResponseEntity<PropertyValue> getObjectProperty(@PathVariable UUID oid, @PathVariable String pid)
+    public ResponseEntity<PropertyValue> getObjectProperty(@PathVariable String oid, @PathVariable String pid)
             throws HttpClientErrorException {
-        try {
-            if (pid.equals("getState")){
+        UUID uuid;
 
-            }
-        } catch (HttpServerErrorException e) {
-            e.printStackTrace();
+        // check if the oid has valid format
+        try {
+            uuid = UUID.fromString(oid);
+        } catch (IllegalArgumentException iae) {
+            iae.printStackTrace();
+
+            // Return HTTP.404
+            return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_FOUND);
         }
-        // if not oid
-        return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_FOUND);
+
+        //TODO: DELETE ME
+        uuid = UUID.fromString("ea10fb0e-b3da-4fea-8ccd-818123004ca5");
+
+        HttpHeaders responseHeaders = new HttpHeaders();
+        PropertyValue jsonBody = new PropertyValue();
+        HttpStatus status = HttpStatus.NOT_FOUND;
+
+        Optional<Device> deviceOptional = deviceRepository.findById(uuid);
+
+        device = null;
+        deviceOptional.ifPresent(d -> device = d);
+
+        // Check if the device is present in the database
+        if (device != null) {
+
+            // temp condition check for 'state'
+            // TODO(@chlenix): replace with a list of predefined properties
+            if (pid.equals("state")) {
+
+                Boolean state = device.isState();
+                if (state != null) {
+                    // State is not null, therefore add the 'Last-Modified' header
+                    responseHeaders.setLastModified(Timestamp.valueOf(device.getDateTime()).getTime());
+                }
+                jsonBody.setTimestamp(OffsetDateTime.now());
+                jsonBody.setValue(state);
+                status = HttpStatus.OK;
+            }
+        }
+
+        // return HTTP.404 if the device does not exist OR
+        // if the :pid does not match any properties defined in the thing description (T332)
+        return new ResponseEntity<>(jsonBody, responseHeaders, status);
     }
 
     @RequestMapping(value = "/objects/{oid}/properties/{pid}", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")
