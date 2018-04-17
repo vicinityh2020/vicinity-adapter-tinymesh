@@ -3,7 +3,6 @@ package com.tinymesh.vicinity.adapter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tinymesh.vicinity.adapter.controller.ObjectsApiController;
 import com.tinymesh.vicinity.adapter.entity.Device;
-import com.tinymesh.vicinity.adapter.repository.DeviceDataHandler;
 import com.tinymesh.vicinity.adapter.repository.DeviceRepository;
 import org.junit.Before;
 import org.junit.Test;
