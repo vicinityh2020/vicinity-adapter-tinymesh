@@ -27,6 +27,8 @@ public class TinyMStreamClient {
     @Value("${tinymesh.client.pass}")
     private String pass;
 
+    @Value("${tinymesh.client.base_url}")
+    private String baseURL;
 
     private WebClient webClient;
     ObjectMapper objectMapper;
@@ -51,12 +53,14 @@ public class TinyMStreamClient {
 
         UriComponents uri = UriComponentsBuilder.fromUriString(endpoint).queryParams(map).buildAndExpand();
 
-        return webClient.get()
+        Flux<String> result = webClient.get()
                 .uri(uri.toString())
                 .header("Authorization", "Basic " + Base64Utils
                         .encodeToString((email + ":" + pass).getBytes(Charset.forName("US-ASCII"))))
                 .retrieve()
                 .bodyToFlux(String.class);
+
+        return result;
     }
 
     public void printStreamedMessages() {
