@@ -6,35 +6,45 @@ import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.util.Base64Utils;
+import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.nio.charset.Charset;
+import java.time.Duration;
 import java.util.function.Consumer;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TinyMStreamClientTest {
 
 
     private WebClient webClient;
 
-    @InjectMocks
+    @Autowired
     private TinyMStreamClient tinyMStreamClient;
 
-    private String email = "test@tiny-mesh.com";
+    @Value("${tinymesh.client.email}")
+    private String email;
 
-    private String pass = "***REMOVED***";
+    @Value("${tinymesh.client.pass}")
+    private String pass;
+
+    @Value("${tinymesh.client.base_url}")
+    private String baseUrl;
+
+    @Value("${tinymesh.client.stream_messages_uri}")
+    private String streamMessagesUri;
 
     private MockWebServer server;
 
@@ -42,9 +52,6 @@ public class TinyMStreamClientTest {
 
     @Before
     public void setup() {
-        ReflectionTestUtils.setField(tinyMStreamClient, "baseURL", "https://http.cloud.tiny-mesh.com");
-        ReflectionTestUtils.setField(tinyMStreamClient, "pass", "***REMOVED***");
-        ReflectionTestUtils.setField(tinyMStreamClient, "email", "test@tiny-mesh.com");
         this.server = new MockWebServer();
         this.webClient = WebClient.create(this.server.url("https://http.cloud.tiny-mesh.com").toString());
     }
@@ -52,28 +59,6 @@ public class TinyMStreamClientTest {
     @After
     public void shutdown() throws Exception {
         this.server.shutdown();
-    }
-
-    @Test
-    public void messageHeaderOnce() throws Exception {
-        prepareResponse(response -> response
-                .setHeader("Content-Type", "application/json"));
-
-        Mono<String> result = this.webClient.get()
-                .uri("/v2/messages/T")
-                .header("Authorization", "Basic " + Base64Utils
-                        .encodeToString((email + ":" + pass).getBytes(Charset.forName("US-ASCII"))))
-                .retrieve()
-                .bodyToMono(String.class);
-
-        StepVerifier.create(result)
-                .expectSubscription();
-
-/*        expectRequest(request -> {
-            assertEquals("application/json", request.getHeader(HttpHeaders.CONTENT_TYPE));*/
-
-
-
     }
 
 
@@ -84,17 +69,19 @@ public class TinyMStreamClientTest {
         prepareResponse(response -> response
                 .setHeader("Content-Type", "application/json"));
 
-        Flux<String> result = this.webClient.get()
-        .uri("/v2/messages/T")
-                .header("Authorization", "Basic " + Base64Utils
-                        .encodeToString((email + ":" + pass).getBytes(Charset.forName("US-ASCII"))))
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .flatMapMany(response -> response.bodyToFlux(String.class));
+        Flux<String> result = tinyMStreamClient.streamMessages(email,pass);
+
+/*        StepVerifier.create(result)
+                .expectSubscription()
+                .expectComplete();*/
 
         StepVerifier.create(result)
                 .expectSubscription()
+                .thenRequest(3)
+                .thenAwait(Duration.ofSeconds(3))
                 .expectComplete();
+
+
 
 /*        expectRequest(request -> {
                 assertEquals("application/json", request.getHeader(HttpHeaders.CONTENT_TYPE));
