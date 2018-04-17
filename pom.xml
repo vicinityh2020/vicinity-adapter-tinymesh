@@ -98,9 +98,9 @@
             <artifactId>reactive-streams</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.projectreactor.addons</groupId>
+            <groupId>io.projectreactor</groupId>
             <artifactId>reactor-test</artifactId>
-            <version>3.1.0.M1</version>
+            <version>3.1.6.RELEASE</version>
             <scope>test</scope>
         </dependency>
 

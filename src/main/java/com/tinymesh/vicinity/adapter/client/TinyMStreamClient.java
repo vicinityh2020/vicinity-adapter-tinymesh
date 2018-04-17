@@ -65,25 +65,25 @@ public class TinyMStreamClient {
 
     public void printStreamedMessages() {
         streamMessages(email,pass).subscribe(deviceProps -> {
-            DoorSensor door = null;
-            try {
-                door = objectMapper.readValue(deviceProps, DoorSensor.class);
-            } catch (IOException e) {
-                System.out.println("\n=========\nRecieved META\n=========\n");
-            }
-            if (door != null){
-                System.out.println(deviceProps);
-                Device device = deviceRepo.findByTinyMuid(door.getProtoTm().getUid());
-
-                if (door.getProtoTm().getDio().getGpio5() == 1) {
-                    device.setState(true);
-                } else {
-                    device.setState(false);
-                }
-                deviceRepo.save(device);
-                System.out.println();
-            }
-
+            this.updateDeviceState(deviceProps);
         }, Throwable::printStackTrace);
+    }
+
+    public void updateDeviceState(String deviceProps) {
+        DoorSensor door = null;
+        try {
+            door = objectMapper.readValue(deviceProps, DoorSensor.class);
+        } catch (IOException e) {
+        }
+        if (door != null){
+            Device device = deviceRepo.findByTinyMuid(door.getProtoTm().getUid());
+
+            if (door.getProtoTm().getDio().getGpio5() == 1) {
+                device.setState(true);
+            } else {
+                device.setState(false);
+            }
+            deviceRepo.save(device);
+        }
     }
 }
