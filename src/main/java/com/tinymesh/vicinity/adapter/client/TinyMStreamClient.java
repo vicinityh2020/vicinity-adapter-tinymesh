@@ -29,7 +29,7 @@ public class TinyMStreamClient {
 
 
     private WebClient webClient;
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
     private DeviceRepository deviceRepo;
 
     public TinyMStreamClient(WebClient webClient, DeviceRepository deviceRepo) {
@@ -65,19 +65,18 @@ public class TinyMStreamClient {
             try {
                 door = objectMapper.readValue(deviceProps, DoorSensor.class);
             } catch (IOException e) {
-                System.out.println("\n=========\nRecieved META\n=========\n");
+
             }
             if (door != null){
                 System.out.println(deviceProps);
                 Device device = deviceRepo.findByTinyMuid(door.getProtoTm().getUid());
 
                 if (door.getProtoTm().getDio().getGpio5() == 1) {
-                    device.setState(true);
+                    device.updateDeviceState(true, door.getDatetime());
                 } else {
-                    device.setState(false);
+                    device.updateDeviceState(false, door.getDatetime());
                 }
                 deviceRepo.save(device);
-                System.out.println();
             }
 
         }, Throwable::printStackTrace);
