@@ -27,6 +27,8 @@ public class TinyMStreamClient {
     @Value("${tinymesh.client.pass}")
     private String pass;
 
+    @Value("${tinymesh.client.base_url}")
+    private String baseURL;
 
     private WebClient webClient;
     private ObjectMapper objectMapper;
@@ -51,34 +53,36 @@ public class TinyMStreamClient {
 
         UriComponents uri = UriComponentsBuilder.fromUriString(endpoint).queryParams(map).buildAndExpand();
 
-        return webClient.get()
+        Flux<String> result = webClient.get()
                 .uri(uri.toString())
                 .header("Authorization", "Basic " + Base64Utils
                         .encodeToString((email + ":" + pass).getBytes(Charset.forName("US-ASCII"))))
                 .retrieve()
                 .bodyToFlux(String.class);
+
+        return result;
     }
 
-    public void printStreamedMessages() {
-        streamMessages(email,pass).subscribe(deviceProps -> {
-            DoorSensor door = null;
-            try {
-                door = objectMapper.readValue(deviceProps, DoorSensor.class);
-            } catch (IOException e) {
+    public void streamDeviceUpdates() {
+        streamMessages(email, pass).subscribe(this::updateDeviceState, Throwable::printStackTrace);
+    }
 
+    public void updateDeviceState(String deviceProps) {
+        DoorSensor door = null;
+        try {
+            door = objectMapper.readValue(deviceProps, DoorSensor.class);
+        } catch (IOException e) {
+        }
+        if (door != null) {
+            Device device = deviceRepo.findByTinyMuid(door.getProtoTm().getUid());
+
+            if (door.getProtoTm().getDio().getGpio5() == 1) {
+                device.updateDeviceState(true, door.getDatetime());
+            } else {
+                device.updateDeviceState(false, door.getDatetime());
             }
-            if (door != null){
-                System.out.println(deviceProps);
-                Device device = deviceRepo.findByTinyMuid(door.getProtoTm().getUid());
-
-                if (door.getProtoTm().getDio().getGpio5() == 1) {
-                    device.updateDeviceState(true, door.getDatetime());
-                } else {
-                    device.updateDeviceState(false, door.getDatetime());
-                }
-                deviceRepo.save(device);
-            }
-
-        }, Throwable::printStackTrace);
+            System.out.println(device);
+            deviceRepo.save(device);
+        }
     }
 }
