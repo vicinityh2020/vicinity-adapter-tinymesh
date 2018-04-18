@@ -27,9 +27,11 @@ public class TinyMStreamClient {
     @Value("${tinymesh.client.pass}")
     private String pass;
 
+    @Value("${tinymesh.client.base_url}")
+    private String baseURL;
 
     private WebClient webClient;
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
     private DeviceRepository deviceRepo;
 
     public TinyMStreamClient(WebClient webClient, DeviceRepository deviceRepo) {
@@ -51,35 +53,36 @@ public class TinyMStreamClient {
 
         UriComponents uri = UriComponentsBuilder.fromUriString(endpoint).queryParams(map).buildAndExpand();
 
-        return webClient.get()
+        Flux<String> result = webClient.get()
                 .uri(uri.toString())
                 .header("Authorization", "Basic " + Base64Utils
                         .encodeToString((email + ":" + pass).getBytes(Charset.forName("US-ASCII"))))
                 .retrieve()
                 .bodyToFlux(String.class);
+
+        return result;
     }
 
-    public void printStreamedMessages() {
-        streamMessages(email,pass).subscribe(deviceProps -> {
-            DoorSensor door = null;
-            try {
-                door = objectMapper.readValue(deviceProps, DoorSensor.class);
-            } catch (IOException e) {
-                System.out.println("\n=========\nRecieved META\n=========\n");
-            }
-            if (door != null){
-                System.out.println(deviceProps);
-                Device device = deviceRepo.findByTinyMuid(door.getProtoTm().getUid());
+    public void streamDeviceUpdates() {
+        streamMessages(email, pass).subscribe(this::updateDeviceState, Throwable::printStackTrace);
+    }
 
-                if (door.getProtoTm().getDio().getGpio5() == 1) {
-                    device.setState(true);
-                } else {
-                    device.setState(false);
-                }
-                deviceRepo.save(device);
-                System.out.println();
-            }
+    public void updateDeviceState(String deviceProps) {
+        DoorSensor door = null;
+        try {
+            door = objectMapper.readValue(deviceProps, DoorSensor.class);
+        } catch (IOException e) {
+        }
+        if (door != null) {
+            Device device = deviceRepo.findByTinyMuid(door.getProtoTm().getUid());
 
-        }, Throwable::printStackTrace);
+            if (door.getProtoTm().getDio().getGpio5() == 1) {
+                device.updateDeviceState(true, door.getDatetime());
+            } else {
+                device.updateDeviceState(false, door.getDatetime());
+            }
+            System.out.println(device);
+            deviceRepo.save(device);
+        }
     }
 }

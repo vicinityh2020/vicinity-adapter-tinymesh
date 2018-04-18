@@ -16,6 +16,6 @@ public class StreamBootstrap implements ApplicationListener<ContextRefreshedEven
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        tinyMStreamClient.printStreamedMessages();
+        tinyMStreamClient.streamDeviceUpdates();
     }
 }

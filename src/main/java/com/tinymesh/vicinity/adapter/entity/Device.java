@@ -6,12 +6,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.UUID;
 
 
 @Entity
-//@Embeddable
 @Table(name = "device")
 public class Device implements IDevice {
 
@@ -101,7 +102,19 @@ public class Device implements IDevice {
         this.tinyMuid = tinyMuid;
     }
 
+    public void updateDeviceState(boolean state, String lastUpdateDateTime){
+        // time zone should be UTC by default
+        // just to make sure that everything is consistent explicitly declare as UTC
+        LocalDateTime time = LocalDateTime.ofInstant(Instant.parse(lastUpdateDateTime), ZoneId.of("UTC"));
+        this.setDateTime(time);
+        this.setState(state);
+    }
+
     public String toString() {
-        return "Device [DeviceType=" + deviceType + ", uuid =" + uuid + ", Date=" + dateTime + ", State=" + state + ", URL=" + url + "]";
+        return "Device [DeviceType=" + deviceType +
+                ", uuid =" + uuid +
+                ", Date=" + dateTime +
+                ", State=" + state +
+                ", URL=" + url + "]";
     }
 }
