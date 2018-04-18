@@ -67,6 +67,8 @@ public class TinyMStreamClient {
         streamMessages(email,pass).subscribe(deviceProps -> {
             this.updateDeviceState(deviceProps);
         }, Throwable::printStackTrace);
+
+
     }
 
     public void updateDeviceState(String deviceProps) {
