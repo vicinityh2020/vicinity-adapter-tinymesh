@@ -149,7 +149,7 @@ public class ObjectsApiController {
             if (pid.equals("state")) {
 
                 Boolean state = device.isState();
-                LocalDateTime time = device.getDateTime();
+                LocalDateTime time = device.getDateTime().withNano(0);
 
                 if (state != null) {
                     // State is not null, therefore add the 'Last-Modified' header

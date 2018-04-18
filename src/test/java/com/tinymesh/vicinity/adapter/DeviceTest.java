@@ -42,7 +42,7 @@ public class DeviceTest {
     @Test
     public void getAllObjects() {
         deviceList.add(new Device("Device1","Sensor", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com", 1));
-        deviceList.add(new Device("Device2","Sensor", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com", 1));
+        deviceList.add(new Device("Device2","Sensor", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com", 2));
         deviceRepository.saveAll(deviceList);
 
         List<ObjectInfo> objectInfoList = mapDeviceDataToObjectInfo(deviceList);
