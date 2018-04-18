@@ -17,7 +17,7 @@ import java.util.UUID;
 public class Device implements IDevice {
 
 
-    private boolean state;
+    private Boolean state;
     @Id
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private UUID uuid;
@@ -33,7 +33,7 @@ public class Device implements IDevice {
     @Column(name = "tinymuid", nullable = false)
     private long tinyMuid;
 
-    public Device(String deviceName, String deviceType, UUID uuid, LocalDateTime dateTime, boolean state, String url, long tinyMuid) {
+    public Device(String deviceName, String deviceType, UUID uuid, LocalDateTime dateTime, Boolean state, String url, long tinyMuid) {
         this.deviceName = deviceName;
         this.uuid = uuid;
         this.dateTime = dateTime;
@@ -54,11 +54,11 @@ public class Device implements IDevice {
         this.deviceName = deviceName;
     }
 
-    public boolean isState() {
+    public Boolean isState() {
         return state;
     }
 
-    public void setState(boolean state) {
+    public void setState(Boolean state) {
         this.state = state;
     }
 

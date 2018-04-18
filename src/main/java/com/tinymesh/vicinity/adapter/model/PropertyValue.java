@@ -26,7 +26,7 @@ public class PropertyValue   {
      * Can be anything: string, number, array, object, etc.
      * @return value
      **/
-    @NotNull
+
     public Object getValue() {
         return value;
     }

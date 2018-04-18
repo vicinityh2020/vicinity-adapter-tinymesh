@@ -8,9 +8,9 @@ public interface IDevice {
 
     void setDeviceName(String deviceName);
 
-    boolean isState();
+    Boolean isState();
 
-    void setState(boolean state);
+    void setState(Boolean state);
 
     UUID getUuid();
 

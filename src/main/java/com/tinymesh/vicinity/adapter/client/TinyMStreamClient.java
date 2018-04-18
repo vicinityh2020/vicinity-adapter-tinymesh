@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Collections;
 
+import static java.util.Collections.singletonList;
 
 @Service
 public class TinyMStreamClient {
@@ -46,10 +47,10 @@ public class TinyMStreamClient {
 
         final String endpoint = "/v2/messages/T";
 
-        map.put("date.from", Collections.singletonList("NOW//-5MINUTE"));
-        map.put("data.encoding", Collections.singletonList("hex"));
-        map.put("continuous", Collections.singletonList("true"));
-        map.put("stream", Collections.singletonList("true"));
+        map.put("date.from", singletonList("NOW//-5MINUTE"));
+        map.put("data.encoding", singletonList("hex"));
+        map.put("continuous", singletonList("true"));
+        map.put("stream", singletonList("true"));
 
         UriComponents uri = UriComponentsBuilder.fromUriString(endpoint).queryParams(map).buildAndExpand();
 
