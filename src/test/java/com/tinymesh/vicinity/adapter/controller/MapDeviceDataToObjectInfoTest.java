@@ -43,6 +43,8 @@ public class MapDeviceDataToObjectInfoTest {
 
     @Test
     public void testMapDeviceDataToObjectInfoEmptyInput(){
+        // make sure that input is empty
+        deviceList = new ArrayList<>();
         objectInfoList = mapDeviceDataToObjectInfo(deviceList);
 
         assertNotNull(objectInfoList);
