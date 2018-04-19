@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -13,12 +14,16 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
+import java.io.*;
 import java.time.Duration;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static org.junit.Assert.assertEquals;
@@ -30,9 +35,12 @@ public class TinyMStreamClientTest {
 
 
     private WebClient webClient;
+    private String respBody;
 
     @Autowired
     private TinyMStreamClient tinyMStreamClient;
+
+    private BufferedReader in;
 
     @Value("${tinymesh.client.email}")
     private String email;
@@ -58,8 +66,13 @@ public class TinyMStreamClientTest {
 
     @After
     public void shutdown() throws Exception {
+            if (in != null) {
+                in.close();
+            }
+            in = null;
         this.server.shutdown();
-    }
+        }
+
 
 
     @Test
@@ -68,24 +81,51 @@ public class TinyMStreamClientTest {
         String content = "type";
         prepareResponse(response -> response
                 .setHeader("Content-Type", "application/json"));
+        in = new BufferedReader(new InputStreamReader(
+                getClass().getResourceAsStream("/messageJSONTestData.json")));
 
         Flux<String> result = tinyMStreamClient.streamMessages(email,pass);
 
-/*        StepVerifier.create(result)
-                .expectSubscription()
-                .expectComplete();*/
+         result.subscribe();
+
 
         StepVerifier.create(result)
                 .expectSubscription()
-                .thenRequest(3)
-                .thenAwait(Duration.ofSeconds(3))
-                .expectComplete();
+                .thenAwait(Duration.ofSeconds(6))
+                .thenCancel()
+                .verify();
+
+/*
 
 
-
-/*        expectRequest(request -> {
+       expectRequest(request -> {
+                assertNotNull(result);
                 assertEquals("application/json", request.getHeader(HttpHeaders.CONTENT_TYPE));
-        });*/
+
+       });
+
+       */
+    }
+
+    @Test
+    public void testUpdateDeviceState(){
+        in = new BufferedReader(new InputStreamReader(
+                getClass().getResourceAsStream("/messageJSONTestData.json")));
+
+        Optional<String> optionalRespBody = in.lines().reduce(String::concat);
+        optionalRespBody.ifPresent(s -> respBody = s);
+
+        ResponseEntity<String> testEntity = new ResponseEntity<>(respBody, HttpStatus.OK);
+
+        tinyMStreamClient.streamMessages(email,pass).subscribe(deviceProps -> {
+            tinyMStreamClient.updateDeviceState(deviceProps);
+        });
+    }
+
+    @Test
+    public void writeMessagesToFile() throws IOException {
+        InputStream initialStream = FileUtils.openInputStream
+                (new File("/messageJSONTestData.json"));
 
     }
 
