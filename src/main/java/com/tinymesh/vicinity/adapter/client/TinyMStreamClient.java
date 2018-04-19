@@ -21,6 +21,13 @@ import java.util.Collections;
 
 @Service
 public class TinyMStreamClient {
+
+    /**
+     * @Value email
+     * @Value pass
+     * @Value baseURL
+     * Values that are declared on resources in application.properties
+     */
     @Value("${tinymesh.client.email}")
     private String email;
 
@@ -30,16 +37,27 @@ public class TinyMStreamClient {
     @Value("${tinymesh.client.base_url}")
     private String baseURL;
 
+
     private WebClient webClient;
     ObjectMapper objectMapper;
     private DeviceRepository deviceRepo;
 
+    /**
+     * @param webClient
+     * @param deviceRepo
+     * Constructor which takes WebClient and DeviceRepository
+     */
     public TinyMStreamClient(WebClient webClient, DeviceRepository deviceRepo) {
         this.webClient = webClient;
         this.deviceRepo = deviceRepo;
         this.objectMapper = new ObjectMapper();
     }
 
+    /**
+     * @param email
+     * @param pass
+     * Method connects to Tiny Mesh cloud using parameters and streams device data from API
+     */
     public Flux<String> streamMessages(String email, String pass) {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
@@ -63,6 +81,9 @@ public class TinyMStreamClient {
         return result;
     }
 
+    /**
+     * Method that prints streamed data from Tiny Mesh cloud
+     */
     public void printStreamedMessages() {
         streamMessages(email,pass).subscribe(deviceProps -> {
             this.updateDeviceState(deviceProps);
@@ -71,6 +92,11 @@ public class TinyMStreamClient {
 
     }
 
+    /**
+     * @param deviceProps
+     * Method updates data in Device Repository(DB)
+     * DoorSensor data is saved!
+     */
     public void updateDeviceState(String deviceProps) {
         DoorSensor door = null;
         try {

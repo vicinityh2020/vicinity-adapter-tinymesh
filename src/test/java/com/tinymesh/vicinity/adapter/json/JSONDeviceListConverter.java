@@ -31,8 +31,6 @@ public class JSONDeviceListConverter {
                 new Device("Device2","Sensor2", UUID.randomUUID(), LocalDateTime.now(), false, "www.test2.com", 1))
                 .collect(Collectors.toList());
 
-
-
         //Convert List of Device objects to JSON
         String arrayToJson = objectMapper.writeValueAsString(deviceList);
         System.out.println("Convert List of person objects to JSON :");
