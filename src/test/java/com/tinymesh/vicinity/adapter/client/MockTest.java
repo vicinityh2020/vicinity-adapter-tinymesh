@@ -1,62 +1,41 @@
 package com.tinymesh.vicinity.adapter.client;
 
+import com.tinymesh.vicinity.adapter.entity.Device;
 import com.tinymesh.vicinity.adapter.repository.DeviceRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Optional;
 
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.assertTrue;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class MockTest {
     private BufferedReader in;
-    private String respBody;
+    private String fakeObject;
 
-
-    @Value("${tinymesh.client.email}")
-    private String email;
-
-    @Value("${tinymesh.client.pass}")
-    private String pass;
-
-    @Value("${tinymesh.client.base_url}")
-    private String baseUrl;
-
-    @Value("${tinymesh.client.stream_messages_uri}")
-    private String streamMessagesUri;
-
-    @Mock
-    private WebClient webClient;
-
+    @Autowired
     private DeviceRepository deviceRepo;
 
-    @InjectMocks
+    @Autowired
     private TinyMStreamClient tinyMStreamClient;
 
     @Before
     public void setUp() throws Exception {
-        ReflectionTestUtils.setField(tinyMStreamClient, "baseURL", "https://http.cloud.tiny-mesh.com");
-        ReflectionTestUtils.setField(tinyMStreamClient, "pass", "***REMOVED***");
-        ReflectionTestUtils.setField(tinyMStreamClient, "email", "test@tiny-mesh.com");
-        MockitoAnnotations.initMocks(this);
+        in = new BufferedReader(new InputStreamReader(
+                getClass().getResourceAsStream("/singleFakeEvent.json")));
+
+        Optional<String> optionalRespBody = in.lines().reduce(String::concat);
+        optionalRespBody.ifPresent(s -> fakeObject = s);
     }
 
     @After
@@ -66,27 +45,16 @@ public class MockTest {
         }
         in = null;
     }
+    //2018-04-18T08:47:40.979Z
 
     @Test
     public void testUpdateDeviceStat() throws Exception {
+        Device dev = deviceRepo.findByTinyMuid(839188480);
+        dev.setState(false);
+        deviceRepo.save(dev);
+        tinyMStreamClient.updateDeviceState(fakeObject);
+        assertTrue(deviceRepo.findByTinyMuid(839188480).isState());
 
-        in = new BufferedReader(new InputStreamReader(
-                getClass().getResourceAsStream("/messageJSONTestData.json")));
 
-        Optional<String> optionalRespBody = in.lines().reduce(String::concat);
-        optionalRespBody.ifPresent(s -> respBody = s);
-
-        ResponseEntity<String> testEntity = new ResponseEntity<>(respBody, HttpStatus.OK);
-
-        webClient = mock(WebClient.class);
-
-        final String testKey = "gifooVvrHGC24";
-        Mockito.when(webClient.get()
-                .exchange().thenReturn(testEntity));
-
-        Flux<String> listOfObjects = tinyMStreamClient.streamMessages(email,pass);
-        assertNotNull(listOfObjects);
-        //assertTrue(listOfObjects.size() > 0);
-     //   assertEquals(listOfObjects.size(), 17);
     }
 }
