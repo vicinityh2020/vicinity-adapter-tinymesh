@@ -10,10 +10,16 @@ public class StreamBootstrap implements ApplicationListener<ContextRefreshedEven
 
     private TinyMStreamClient tinyMStreamClient;
 
+    /**
+     * @param tinyMStreamClient {@link TinyMStreamClient}
+     */
     public StreamBootstrap(TinyMStreamClient tinyMStreamClient) {
         this.tinyMStreamClient = tinyMStreamClient;
     }
 
+    /**
+     * @param contextRefreshedEvent {@link ContextRefreshedEvent}
+     */
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         tinyMStreamClient.printStreamedMessages();

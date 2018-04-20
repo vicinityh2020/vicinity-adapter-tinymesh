@@ -23,9 +23,9 @@ import java.util.Collections;
 public class TinyMStreamClient {
 
     /**
-     * @Value email
-     * @Value pass
-     * @Value baseURL
+     * @value email
+     * @value pass
+     * @value baseURL
      * Values that are declared on resources in application.properties
      */
     @Value("${tinymesh.client.email}")
@@ -46,6 +46,7 @@ public class TinyMStreamClient {
      * @param webClient
      * @param deviceRepo
      * Constructor which takes WebClient and DeviceRepository
+     * {@link DeviceRepository}
      */
     public TinyMStreamClient(WebClient webClient, DeviceRepository deviceRepo) {
         this.webClient = webClient;
@@ -57,6 +58,7 @@ public class TinyMStreamClient {
      * @param email
      * @param pass
      * Method connects to Tiny Mesh cloud using parameters and streams device data from API
+     * @return result
      */
     public Flux<String> streamMessages(String email, String pass) {
 
@@ -82,20 +84,20 @@ public class TinyMStreamClient {
     }
 
     /**
-     * Method that prints streamed data from Tiny Mesh cloud
+     * @value deviceProps
+     * Method prints streamed data from Tiny Mesh cloud
      */
     public void printStreamedMessages() {
         streamMessages(email,pass).subscribe(deviceProps -> {
             this.updateDeviceState(deviceProps);
         }, Throwable::printStackTrace);
-
-
     }
 
     /**
      * @param deviceProps
      * Method updates data in Device Repository(DB)
      * DoorSensor data is saved!
+     * {@link DoorSensor}
      */
     public void updateDeviceState(String deviceProps) {
         DoorSensor door = null;

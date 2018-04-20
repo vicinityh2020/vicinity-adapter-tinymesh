@@ -9,8 +9,15 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class WebClientConfig {
 
+    /**
+     * @value url
+     */
     @Value("${tinymesh.client.base_url}")
     private String url;
+
+    /**
+     * @return {@link WebClient}
+     */
     @Bean
     public WebClient webClient(){
         return WebClient.builder()

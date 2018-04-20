@@ -23,9 +23,12 @@ public class TinyMStreamClientTest {
     private BufferedReader bufferedReader;
     private String jsonTestObject;
 
+    /**
+     * {@link DeviceRepository}
+     * {@link TinyMStreamClient}
+     */
     @Autowired
     private DeviceRepository deviceRepository;
-
     @Autowired
     private TinyMStreamClient tinyMStreamClient;
 
@@ -42,7 +45,6 @@ public class TinyMStreamClientTest {
     }
 
     /**
-     *
      * @throws IOException
      * If bufferReader is null, then it is not created
      * If bufferReader is not null, it is open and it needs to be closed!
