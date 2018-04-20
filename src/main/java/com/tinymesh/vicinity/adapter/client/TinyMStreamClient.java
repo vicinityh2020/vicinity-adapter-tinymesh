@@ -59,6 +59,7 @@ public class TinyMStreamClient {
      * @param email
      * @param pass
      * Method connects to Tiny Mesh cloud using parameters and streams device data from API
+     * Streaming data from Tiny Mesh Cloud is done over HTTP using GET /v2/messages/T.
      * @return result
      */
     public Flux<String> streamMessages(String email, String pass) {
