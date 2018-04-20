@@ -25,6 +25,7 @@ public class TinyMStreamClientTest {
 
     /**
      * {@link DeviceRepository}
+     *
      * {@link TinyMStreamClient}
      */
     @Autowired
@@ -33,7 +34,7 @@ public class TinyMStreamClientTest {
     private TinyMStreamClient tinyMStreamClient;
 
     /**
-     * Creating bufferReader to read singleMessageJsonTest.json file to test it later
+     * Creating bufferReader to read singleMessageJsonTest.json file to test it later.
      */
     @Before
     public void setUp() {
@@ -45,9 +46,12 @@ public class TinyMStreamClientTest {
     }
 
     /**
-     * @throws IOException
-     * If bufferReader is null, then it is not created
+     * If bufferReader is null, then it is not created.
+     *
      * If bufferReader is not null, it is open and it needs to be closed!
+     *
+     * @throws IOException
+
      */
     @After
     public void teardown() throws IOException {
@@ -58,9 +62,12 @@ public class TinyMStreamClientTest {
     }
 
     /**
-     * Testing device
-     * Is device State TRUE
-     * Is device has different dateTime than actual dateTime
+     * Testing device.
+     *
+     * Is device State TRUE?
+     *
+     * Is device has different dateTime than actual dateTime?
+     *
      * Here device data in singleMessageJsonTest.json file being tested!
      */
     @Test

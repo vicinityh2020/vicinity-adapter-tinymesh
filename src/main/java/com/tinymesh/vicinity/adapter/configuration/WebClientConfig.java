@@ -16,7 +16,8 @@ public class WebClientConfig {
     private String url;
 
     /**
-     * @return {@link WebClient}
+     * @return webClient
+     * @see WebClient
      */
     @Bean
     public WebClient webClient(){
