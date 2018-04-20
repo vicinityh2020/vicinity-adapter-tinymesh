@@ -24,10 +24,11 @@ import static java.util.Collections.singletonList;
 public class TinyMStreamClient {
 
     /**
-     * @value email
-     * @value pass
-     * @value baseURL
-     * Values that are declared on resources in application.properties
+     * Values that are declared on resources in application.properties.
+     * @value email is a email address value that is used to connect TinyMesh cloud
+     * @value pass is a password value that is used to connect TinyMesh cloud
+     * @value baseURL is a url address of TinyMesh cloud
+
      */
     @Value("${tinymesh.client.email}")
     private String email;
@@ -44,10 +45,9 @@ public class TinyMStreamClient {
     private DeviceRepository deviceRepo;
 
     /**
-     * @param webClient
-     * @param deviceRepo
-     * Constructor which takes WebClient and DeviceRepository
-     * {@link DeviceRepository}
+     * Constructor which takes {@link WebClient} and {@link DeviceRepository}
+     * @param webClient is an interface representing the main entry point for performing web requests
+     * @param deviceRepo is a repository for saving Devices.
      */
     public TinyMStreamClient(WebClient webClient, DeviceRepository deviceRepo) {
         this.webClient = webClient;
@@ -56,11 +56,13 @@ public class TinyMStreamClient {
     }
 
     /**
-     * @param email
-     * @param pass
-     * Method connects to Tiny Mesh cloud using parameters and streams device data from API
+     * Method connects to Tiny Mesh cloud using parameters and streams device data from API.
+     *
      * Streaming data from Tiny Mesh Cloud is done over HTTP using GET /v2/messages/T.
+     * @param email is a email address value that is used to connect TinyMesh cloud
+     * @param pass is a password value that is used to connect TinyMesh cloud
      * @return result
+     * @see Flux
      */
     public Flux<String> streamMessages(String email, String pass) {
 
@@ -86,18 +88,17 @@ public class TinyMStreamClient {
     }
 
     /**
-     * @value deviceProps
-     * Method prints streamed data from Tiny Mesh cloud
+     * It fetches Device updates.
      */
     public void streamDeviceUpdates() {
         streamMessages(email, pass).subscribe(this::updateDeviceState, Throwable::printStackTrace);
     }
 
     /**
-     * @param deviceProps
-     * Method updates data in Device Repository(DB)
-     * DoorSensor data is saved!
-     * {@link DoorSensor}
+     * Method updates data in {@link DeviceRepository} (DB).
+     *
+     * {@link DoorSensor} data is saved in repository!
+     * @param deviceProps is deviceProperties
      */
     public void updateDeviceState(String deviceProps) {
         DoorSensor door = null;
