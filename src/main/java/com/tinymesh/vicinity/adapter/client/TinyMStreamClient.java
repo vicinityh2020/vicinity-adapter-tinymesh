@@ -16,7 +16,8 @@ import reactor.core.publisher.Flux;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Collections;
+
+import static java.util.Collections.singletonList;
 
 
 @Service
