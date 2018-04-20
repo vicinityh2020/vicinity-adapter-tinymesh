@@ -39,7 +39,7 @@ public class TinyMStreamClient {
 
 
     private WebClient webClient;
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
     private DeviceRepository deviceRepo;
 
     /**
@@ -66,10 +66,10 @@ public class TinyMStreamClient {
 
         final String endpoint = "/v2/messages/T";
 
-        map.put("date.from", Collections.singletonList("NOW//-5MINUTE"));
-        map.put("data.encoding", Collections.singletonList("hex"));
-        map.put("continuous", Collections.singletonList("true"));
-        map.put("stream", Collections.singletonList("true"));
+        map.put("date.from", singletonList("NOW//-5MINUTE"));
+        map.put("data.encoding", singletonList("hex"));
+        map.put("continuous", singletonList("true"));
+        map.put("stream", singletonList("true"));
 
         UriComponents uri = UriComponentsBuilder.fromUriString(endpoint).queryParams(map).buildAndExpand();
 
@@ -87,10 +87,8 @@ public class TinyMStreamClient {
      * @value deviceProps
      * Method prints streamed data from Tiny Mesh cloud
      */
-    public void printStreamedMessages() {
-        streamMessages(email,pass).subscribe(deviceProps -> {
-            this.updateDeviceState(deviceProps);
-        }, Throwable::printStackTrace);
+    public void streamDeviceUpdates() {
+        streamMessages(email, pass).subscribe(this::updateDeviceState, Throwable::printStackTrace);
     }
 
     /**
@@ -105,13 +103,13 @@ public class TinyMStreamClient {
             door = objectMapper.readValue(deviceProps, DoorSensor.class);
         } catch (IOException e) {
         }
-        if (door != null){
+        if (door != null) {
             Device device = deviceRepo.findByTinyMuid(door.getProtoTm().getUid());
 
             if (door.getProtoTm().getDio().getGpio5() == 1) {
-                device.setState(true);
+                device.updateDeviceState(true, door.getDatetime());
             } else {
-                device.setState(false);
+                device.updateDeviceState(false, door.getDatetime());
             }
             deviceRepo.save(device);
         }

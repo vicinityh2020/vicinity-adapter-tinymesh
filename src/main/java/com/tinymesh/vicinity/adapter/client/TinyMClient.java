@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -48,12 +49,17 @@ public class TinyMClient {
         //filter out devices that are not provisioned as per description in T330
         //and creates Device objects suitable for DB
         devices.stream().filter(device -> device.getProvisioned().equals("active")).forEach(device -> {
-            final String deviceURL = String.format("%s/%s/%s/%s", baseURL, endpointDevice, device.getNetwork(), device.getKey());
+            final String deviceURL = String.format("%s/%s/%s/%s",
+                    baseURL, endpointDevice,
+                    device.getNetwork(),
+                    device.getKey());
+
             deviceObjects.add(new Device(
                     device.getName(),
                     device.getType(),
                     UUID.randomUUID(),
-                    LocalDateTime.now(),
+                    // save time in utc to avoid any errors caused by time zone mismatch
+                    LocalDateTime.now(ZoneId.of("UTC")),
                     true, deviceURL,
                     device.getAddress()));
         });
@@ -98,8 +104,7 @@ public class TinyMClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", authHeader);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        return entity;
+        return new HttpEntity<>(headers);
     }
 
 }

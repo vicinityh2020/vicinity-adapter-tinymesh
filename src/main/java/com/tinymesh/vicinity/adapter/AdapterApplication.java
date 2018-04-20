@@ -41,9 +41,11 @@ public class AdapterApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
         Device d = new Device("TestDevice", "Door", UUID.randomUUID(), LocalDateTime.now(), true, "www.test.com", 1);
         Device d2 = new Device("TestDevice2", "Door2", UUID.randomUUID(), LocalDateTime.now(), true, "www.test2.com", 2);
+        Device d3 = new Device("TestDevice3", "Door3", UUID.fromString("ea10fb0e-b3da-4fea-8ccd-818123004ca5"), LocalDateTime.now(), null, "www.test3.com", 3);
         List<Device> devList = new ArrayList<>();
         devList.add(d);
         devList.add(d2);
+        devList.add(d3);
         deviceRepository.saveAll(devList);
         Device device = deviceRepository.findByTinyMuid(2);
         System.out.println(device);
