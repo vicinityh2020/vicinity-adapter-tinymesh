@@ -27,7 +27,6 @@ import static org.springframework.http.HttpMethod.GET;
 
 @Service
 public class TinyMClient {
-
     private RestTemplate restTemplate;
 
     @Value("${tinymesh.client.email}")
@@ -42,7 +41,6 @@ public class TinyMClient {
     public TinyMClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
-
 
     /**
      * Recieves a list of devices from TinyM cloud and maps them to a list of Device entities ready to be saved to DB.
@@ -127,7 +125,6 @@ public class TinyMClient {
         return null;
     }
 
-
     /**
      * Helper method to create headers for requests.
      * @return returns HttpEntity<String>
@@ -142,6 +139,5 @@ public class TinyMClient {
         headers.set("Authorization", authHeader);
         return new HttpEntity<>(headers);
     }
-
 }
 

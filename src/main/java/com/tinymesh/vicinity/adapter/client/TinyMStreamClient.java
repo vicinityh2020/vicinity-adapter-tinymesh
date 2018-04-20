@@ -28,9 +28,6 @@ public class TinyMStreamClient {
     @Value("${tinymesh.client.pass}")
     private String pass;
 
-    @Value("${tinymesh.client.base_url}")
-    private String baseURL;
-
     private WebClient webClient;
     private ObjectMapper objectMapper;
     private DeviceRepository deviceRepo;
