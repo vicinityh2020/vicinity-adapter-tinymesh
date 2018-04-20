@@ -45,7 +45,6 @@ public class MockTest {
         }
         in = null;
     }
-    //2018-04-18T08:47:40.979Z
 
     @Test
     public void testUpdateDeviceStat() throws Exception {
