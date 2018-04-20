@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "device")
-public class Device implements IDevice {
+public class Device {
 
 
     private Boolean state;

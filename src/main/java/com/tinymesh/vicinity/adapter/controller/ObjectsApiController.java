@@ -9,14 +9,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.time.*;
-import java.time.temporal.ChronoField;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 
 @RestController
@@ -108,12 +107,6 @@ public class ObjectsApiController {
         }
 
         return items;
-    }
-
-    @RequestMapping(value = "/objects/{oid}",method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<DoorSensorJSON> getObject(@PathVariable String oid) {
-        DoorSensorJSON device = tinyMClient.requestDevice(oid);
-        return new ResponseEntity<>(device, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/objects", method = RequestMethod.GET, produces = "application/json")

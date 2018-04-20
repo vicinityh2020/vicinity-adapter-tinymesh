@@ -24,9 +24,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -58,7 +56,6 @@ public class TinyMClientTest {
 
     @Test
     public void requestDevices() throws Exception {
-
         in = new BufferedReader(new InputStreamReader(
                 getClass().getResourceAsStream("/deviceJSONTestData.json")));
 

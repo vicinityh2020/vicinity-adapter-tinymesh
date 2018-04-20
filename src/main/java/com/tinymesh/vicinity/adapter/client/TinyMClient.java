@@ -11,8 +11,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
@@ -25,7 +27,6 @@ import static org.springframework.http.HttpMethod.GET;
 
 @Service
 public class TinyMClient {
-
     private RestTemplate restTemplate;
 
     @Value("${tinymesh.client.email}")
@@ -41,6 +42,10 @@ public class TinyMClient {
         this.restTemplate = restTemplate;
     }
 
+    /**
+     * Recieves a list of devices from TinyM cloud and maps them to a list of Device entities ready to be saved to DB.
+     * @return List of Device
+     */
     public List<Device> syncDevices(){
         final String endpointDevice = "v2/device";
         List<DoorSensorJSON> devices = this.requestDevices();
@@ -66,13 +71,25 @@ public class TinyMClient {
         return deviceObjects;
     }
 
+    /**
+     * Requests up to date list of devices from TinyMesh cloud.
+     * @return a list of devices available.
+     */
+    @Nullable
     public List<DoorSensorJSON> requestDevices(){
         ObjectMapper objectMapper = new ObjectMapper();
         HttpEntity<String> entity = getHTTPEntity();
 
         String url = baseURL + "/v2/device/T";
-        ResponseEntity<String> response = restTemplate.exchange(url, GET, entity, String.class);
 
+        ResponseEntity<String> response = null;
+
+        try {
+            response = restTemplate.exchange(url, GET, entity, String.class);
+        } catch (RestClientException e) {
+            e.printStackTrace();
+            return null;
+        }
         try {
             return objectMapper.readValue(response.getBody(), new TypeReference<List<DoorSensorJSON>>(){});
         } catch (IOException e) {
@@ -81,12 +98,24 @@ public class TinyMClient {
         return null;
     }
 
+    /**
+     * Requests specific device from TinyMesh cloud
+     * @param oid id of the device being requested
+     * @return returns JSON mapped to pojo.
+     */
+    @Nullable
     public DoorSensorJSON requestDevice(String oid){
         ObjectMapper objectMapper = new ObjectMapper();
         HttpEntity<String> entity = getHTTPEntity();
 
         String url = baseURL + "/v2/device/T/" + oid;
-        ResponseEntity<String> response = restTemplate.exchange(url, GET, entity, String.class);
+        ResponseEntity<String> response;
+        try {
+            response = restTemplate.exchange(url, GET, entity, String.class);
+        } catch (RestClientException e) {
+            e.printStackTrace();
+            return null;
+        }
 
         try {
             return objectMapper.readValue(response.getBody(), DoorSensorJSON.class);
@@ -96,6 +125,10 @@ public class TinyMClient {
         return null;
     }
 
+    /**
+     * Helper method to create headers for requests.
+     * @return returns HttpEntity<String>
+     */
     private HttpEntity<String> getHTTPEntity() {
         String credentials = email + ":" + pass;
         byte[] encodedAuthHeaderValue = Base64.encodeBase64(credentials.getBytes(Charset.forName("US-ASCII")));
@@ -106,6 +139,5 @@ public class TinyMClient {
         headers.set("Authorization", authHeader);
         return new HttpEntity<>(headers);
     }
-
 }
 
