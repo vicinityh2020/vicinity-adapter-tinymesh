@@ -57,7 +57,6 @@ public class TinyMStreamClient {
 
     /**
      * Method connects to Tiny Mesh cloud using parameters and streams device data from API.
-     *
      * Streaming data from Tiny Mesh Cloud is done over HTTP using GET /v2/messages/T.
      * @param email is a email address value that is used to connect TinyMesh cloud
      * @param pass is a password value that is used to connect TinyMesh cloud
