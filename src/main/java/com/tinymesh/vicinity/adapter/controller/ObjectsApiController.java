@@ -1,6 +1,5 @@
 package com.tinymesh.vicinity.adapter.controller;
 
-import com.tinymesh.vicinity.adapter.client.TinyMClient;
 import com.tinymesh.vicinity.adapter.entity.Device;
 import com.tinymesh.vicinity.adapter.entity.DeviceUtilization;
 import com.tinymesh.vicinity.adapter.model.*;
@@ -9,7 +8,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpServerErrorException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -18,23 +16,26 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 
+/**
+ * The class is responsible for providing a REST-ful API service
+ * and serve JSON to incoming HTTP requests
+ */
 @RestController
 public class ObjectsApiController {
 
-
-    private TinyMClient tinyMClient;
     private DeviceRepository deviceRepository;
-    private static Map<UUID, ObjectInfo> objects = new HashMap<>();
 
-    public ObjectsApiController(TinyMClient tinyMClient, DeviceRepository deviceRepository) {
+    public ObjectsApiController(DeviceRepository deviceRepository) {
         this.deviceRepository = deviceRepository;
-        this.tinyMClient = tinyMClient;
     }
 
-    public Map getHashmapObjects() {
-        return objects;
-    }
-
+    /**
+     * Helper method which translates a given list of device-utilization objects (DB entity) {@link DeviceUtilization}
+     * to a list of objects {@link ObjectInfo}
+     *
+     * @param deviceUtilizationList list to be converted
+     * @return returns a new list of objects suitable for JSON display
+     */
     public static List<ObjectInfo> mapDeviceUtilDataToObjectInfo(List<DeviceUtilization> deviceUtilizationList) {
         List<ObjectInfo> items = new ArrayList<>();
 
@@ -72,6 +73,16 @@ public class ObjectsApiController {
         return items;
     }
 
+    /**
+     * Helper method which translates a given list of devices (DB entity) {@link Device}
+     * to a list of objects (JSON model) {@link ObjectInfo}
+     *
+     * @param deviceList a list to be converted
+     * @return returns a new list of objects suitable for JSON display
+     * @see ObjectProperty
+     * @see LinkInfo
+     * @see OutputSchema
+     */
     public static List<ObjectInfo> mapDeviceDataToObjectInfo(List<Device> deviceList) {
         List<ObjectInfo> items = new ArrayList<>();
 
@@ -109,23 +120,57 @@ public class ObjectsApiController {
         return items;
     }
 
+
+    /**
+     * Endpoint; Fetches a list of all {@link ObjectInfo} objects from the TinyMesh cloud.
+     * Produces a JSON response containing the information about the objects and their attributes.
+     *
+     * @return ResponseEntity of type list, containing the {@link ObjectInfo} objects with
+     * http status 200 on success, or http status 404 if no objects exist.
+     * @see ResponseEntity
+     */
     @RequestMapping(value = "/objects", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<ObjectInfo>> getObjects() {
 
         List<ObjectInfo> objectList;
         List<Device> deviceList = deviceRepository.findAll();
+
+        if (deviceList.isEmpty()) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
+        }
+
         objectList = mapDeviceDataToObjectInfo(deviceList);
         return new ResponseEntity<>(objectList, HttpStatus.OK);
     }
 
+    /**
+     * Fallback method which handles all the IllegalArgumentExceptions
+     *
+     * @param response an {@link HttpServletResponse} object containing the response attributes
+     * @throws IOException in case a response cannot be sent
+     * @see IllegalArgumentException
+     * @see IOException
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     void handleBadRequests(HttpServletResponse response) throws IOException {
         response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad request.");
     }
 
+    /**
+     * Endpoint; Gets the last known value for a property {@link PropertyValue}.
+     *
+     * @param oid a unique object id used to address a specific object
+     * @param pid a unique property id used to address a specific property
+     * @return The endpoint returns state from database, which represents the last received value from TinyMesh Cloud.
+     * HTTP.404 if the device does not exist.
+     * HTTP.404 if the pid does not match any properties defined in the thing description (T332).
+     * HTTP.200 if a matching uuid and property is found.
+     * @see ResponseEntity
+     * @see Device
+     */
     @RequestMapping(value = "/objects/{oid}/properties/{pid}",
-                    method = RequestMethod.GET,
-                    produces = "application/json")
+            method = RequestMethod.GET,
+            produces = "application/json")
     public ResponseEntity<PropertyValue> getObjectProperty(@PathVariable UUID oid, @PathVariable String pid) {
 
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -154,53 +199,22 @@ public class ObjectsApiController {
             }
         }
 
-        // return HTTP.404 if the device does not exist OR
-        // return HTTP.404 if the :pid does not match any properties defined in the thing description (T332)
-        // return HTTP.200 if a matching uuid and property is found
         return new ResponseEntity<>(jsonBody, responseHeaders, status);
     }
 
     @RequestMapping(value = "/objects/{oid}/properties/{pid}", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")
     public ResponseEntity<PropertyValue> setObjectProperty(@PathVariable UUID oid, @PathVariable String pid, @RequestBody SetPropertyValue body) {
-        try {
-            if (pid.equals("setState")) {
-                return new ResponseEntity<>(new PropertyValue(), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_FOUND);
-            }
-        } catch (HttpServerErrorException e) {
-            e.printStackTrace();
-        }
         return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_IMPLEMENTED);
     }
 
     @RequestMapping(value = "/objects/{oid}/actions/{aid}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<PropertyValue> getObjectActionStatus(@PathVariable UUID oid, @PathVariable String aid, @RequestBody ExecActionPayload body) {
-        try {
-            if (aid.equals("getAction")) {
-                return new ResponseEntity<>(new PropertyValue(), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_FOUND);
-            }
-        } catch (HttpServerErrorException e) {
-            e.printStackTrace();
-        }
         return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_IMPLEMENTED);
     }
 
 
     @RequestMapping(value = "/objects/{oid}/actions/{aid}", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")
     public ResponseEntity<PropertyValue> executeObjectAction(@PathVariable UUID oid, @PathVariable String aid) {
-        try {
-            if (aid.equals("putAction")) {
-
-                return new ResponseEntity<>(new PropertyValue(), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_FOUND);
-            }
-        } catch (HttpServerErrorException e) {
-            e.printStackTrace();
-        }
         return new ResponseEntity<>(new PropertyValue(), HttpStatus.NOT_IMPLEMENTED);
     }
 }

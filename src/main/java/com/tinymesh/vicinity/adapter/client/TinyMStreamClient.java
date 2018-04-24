@@ -113,6 +113,7 @@ public class TinyMStreamClient {
             } else {
                 device.updateDeviceState(false, door.getDatetime());
             }
+            System.out.println(device);
             deviceRepo.save(device);
         }
     }

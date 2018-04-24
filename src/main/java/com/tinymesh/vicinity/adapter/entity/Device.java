@@ -190,11 +190,8 @@ public class Device {
     ", State=" + state +
     ", URL=" + url + "]"
      */
+    @Override
     public String toString() {
-        return "Device [DeviceType=" + deviceType +
-                ", uuid =" + uuid +
-                ", Date=" + dateTime +
-                ", State=" + state +
-                ", URL=" + url + "]";
+        return String.format("Device{%-20s | %-20s | %-5s}", deviceName, deviceType, state);
     }
 }

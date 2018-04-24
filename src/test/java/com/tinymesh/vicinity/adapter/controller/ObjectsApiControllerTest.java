@@ -33,7 +33,6 @@ public class ObjectsApiControllerTest {
     @InjectMocks
     ObjectsApiController controller;
 
-    ArrayList<UUID> oids;
     ArrayList<Device> mockDevices;
     Boolean[] states = {true, null};
 
@@ -43,7 +42,7 @@ public class ObjectsApiControllerTest {
 
     @Before
     public void setUp() throws Exception {
-        oids = new ArrayList<>();
+
         mockDevices = new ArrayList<>();
 
         for (int i = 0; i < maxPositiveTests; i++) {
@@ -51,7 +50,6 @@ public class ObjectsApiControllerTest {
             Device device = new Device("MockTestDevice" + String.valueOf(i), "MockType" + String.valueOf(i),
                     uuid, LocalDateTime.now(), states[i], "www.mockurl.com", i);
 
-            oids.add(uuid);
             mockDevices.add(device);
 
             when(deviceRepository.findById(uuid)).thenReturn(Optional.of(device));
@@ -62,29 +60,36 @@ public class ObjectsApiControllerTest {
     }
 
     @Test
-    public void getObjectProperty() throws Exception {
-        for (int i = 0; i < mockDevices.size(); i++) {
-            Device mockDevice = mockDevices.get(i);
+    public void oidIsPresentTest() throws Exception {
+        ResponseEntity<PropertyValue> response = controller.getObjectProperty(mockDevices.get(0).getUuid(), "state");
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
-            ResponseEntity<PropertyValue> response = controller.getObjectProperty(mockDevice.getUuid(), "state");
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-
-            Boolean stateValue = (Boolean) response.getBody().getValue();
-            assertEquals(mockDevice.isState(), stateValue);
-
-            if (stateValue != null) {
-                assertTrue(response.getHeaders().containsKey("Last-Modified"));
-
-                // withNano(0) to omit nanoseconds
-
-                long expectedTime = Timestamp.valueOf(mockDevice.getDateTime().withNano(0)).getTime();
-                assertEquals(expectedTime, response.getHeaders().getLastModified());
-            }
-        }
-
-        // fail on non existent uuid
         ResponseEntity<PropertyValue> notFoundResponse = controller.getObjectProperty(nonExistentUuid, "state");
         assertEquals(HttpStatus.NOT_FOUND, notFoundResponse.getStatusCode());
     }
 
+    @Test
+    public void propertyNotPresentTest() throws Exception {
+        ResponseEntity<PropertyValue> notFoundResponse = controller.getObjectProperty(mockDevices.get(0).getUuid(), "_test_nostate");
+        assertEquals(HttpStatus.NOT_FOUND, notFoundResponse.getStatusCode());
+    }
+
+    @Test
+    public void lastModifiedHeaderTest() throws Exception {
+        for (Device mockDevice : mockDevices) {
+            ResponseEntity<PropertyValue> response = controller.getObjectProperty(mockDevice.getUuid(), "state");
+
+            boolean lastModifiedPresent = response.getHeaders().containsKey("Last-Modified");
+
+            if (response.getBody().getValue() != null) {
+                assertTrue(lastModifiedPresent);
+
+                // withNano(0) to omit nanoseconds
+                long expectedTime = Timestamp.valueOf(mockDevice.getDateTime().withNano(0)).getTime();
+                assertEquals(expectedTime, response.getHeaders().getLastModified());
+            } else {
+                assertFalse(lastModifiedPresent);
+            }
+        }
+    }
 }
