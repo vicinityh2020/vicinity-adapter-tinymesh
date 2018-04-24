@@ -2,6 +2,7 @@ package com.tinymesh.vicinity.adapter.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.javafx.fxml.builder.URLBuilder;
 import com.tinymesh.vicinity.adapter.entity.Device;
 import com.tinymesh.vicinity.adapter.model.DoorSensorJSON;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -38,18 +41,23 @@ public class TinyMClient {
     @Value("${tinymesh.client.base_url}")
     private String baseURL;
 
+    @Value("${tinymesh.networkID}")
+    private String networkID;
+
     public TinyMClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
     /**
      * Recieves a list of devices from TinyM cloud and maps them to a list of Device entities ready to be saved to DB.
+     *
      * @return List of Device
      */
-    public List<Device> syncDevices(){
+    public List<Device> syncDevices() {
         final String endpointDevice = "v2/device";
         List<DoorSensorJSON> devices = this.requestDevices();
         List<Device> deviceObjects = new ArrayList<>();
+
 
         //filter out devices that are not provisioned as per description in T330
         //and creates Device objects suitable for DB
@@ -73,14 +81,18 @@ public class TinyMClient {
 
     /**
      * Requests up to date list of devices from TinyMesh cloud.
+     *
      * @return a list of devices available.
      */
     @Nullable
-    public List<DoorSensorJSON> requestDevices(){
+    public List<DoorSensorJSON> requestDevices() {
         ObjectMapper objectMapper = new ObjectMapper();
         HttpEntity<String> entity = getHTTPEntity();
-
-        String url = baseURL + "/v2/device/T";
+        String url = UriComponentsBuilder
+                .fromHttpUrl(baseURL)
+                .path("/v2/device/{networkID}")
+                .buildAndExpand(networkID)
+                .toUriString();
 
         ResponseEntity<String> response = null;
 
@@ -91,7 +103,8 @@ public class TinyMClient {
             return null;
         }
         try {
-            return objectMapper.readValue(response.getBody(), new TypeReference<List<DoorSensorJSON>>(){});
+            return objectMapper.readValue(response.getBody(), new TypeReference<List<DoorSensorJSON>>() {
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -100,15 +113,20 @@ public class TinyMClient {
 
     /**
      * Requests specific device from TinyMesh cloud
+     *
      * @param oid id of the device being requested
      * @return returns JSON mapped to pojo.
      */
     @Nullable
-    public DoorSensorJSON requestDevice(String oid){
+    public DoorSensorJSON requestDevice(String oid) {
         ObjectMapper objectMapper = new ObjectMapper();
         HttpEntity<String> entity = getHTTPEntity();
+        String url = UriComponentsBuilder
+                .fromHttpUrl(baseURL)
+                .path("/v2/device/{networkID}/{oid}")
+                .buildAndExpand(networkID, oid)
+                .toUriString();
 
-        String url = baseURL + "/v2/device/T/" + oid;
         ResponseEntity<String> response;
         try {
             response = restTemplate.exchange(url, GET, entity, String.class);
@@ -127,6 +145,7 @@ public class TinyMClient {
 
     /**
      * Helper method to create headers for requests.
+     *
      * @return returns HttpEntity<String>
      */
     private HttpEntity<String> getHTTPEntity() {
