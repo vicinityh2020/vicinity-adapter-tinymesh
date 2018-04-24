@@ -56,7 +56,7 @@ public class DeviceUtilization {
 
     /**
      * Sets UUID
-     * @param uuid
+     * @param uuid unique ID of DeviceUtil
      */
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
@@ -72,7 +72,7 @@ public class DeviceUtilization {
 
     /**
      * Sets date and time door was opened
-     * @param opened
+     * @param opened when Door is opened
      */
     public void setOpened(LocalDateTime opened) {
         this.opened = opened;
@@ -88,7 +88,7 @@ public class DeviceUtilization {
 
     /**
      * Sets date and time door was closed
-     * @param closed
+     * @param closed when door is closed
      */
     public void setClosed(LocalDateTime closed) {
         this.closed = closed;
@@ -104,7 +104,7 @@ public class DeviceUtilization {
 
     /**
      * Sets utilization
-     * @param utilization
+     * @param utilization utilization of Device
      */
     public void setUtilization(int utilization) {
         this.utilization = utilization;
@@ -120,7 +120,7 @@ public class DeviceUtilization {
 
     /**
      * Sets UUID of Device
-     * @param deviceUUID
+     * @param deviceUUID unique ID of Device
      */
     public void setDeviceUUID(UUID deviceUUID) {
         this.deviceUUID = deviceUUID;
