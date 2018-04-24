@@ -39,6 +39,9 @@ public class ObjectsApiControllerIntegrationTests {
 	private DeviceRepository deviceRepository;
 
     @Autowired
+	/**
+	 * @param HttpMessageConverter converts to json.
+	 */
 	void setConverters(HttpMessageConverter<?>[] converters) {
 
         HttpMessageConverter mappingJackson2HttpMessageConverter = Arrays.stream(converters)
@@ -50,7 +53,13 @@ public class ObjectsApiControllerIntegrationTests {
                 mappingJackson2HttpMessageConverter);
 	}
 
-	//Testing if object has same values as Device
+	/**
+	 * Method tests if objects has same values as Devise
+	 * @throws Exception
+	 * @see Device
+	 * @see DeviceRepository
+	 * @see ObjectsApiController
+	 */
 	@Test
 	public void getAllObjects() throws Exception {
 		List<Device> deviceList =  deviceRepository.findAll();
@@ -62,8 +71,10 @@ public class ObjectsApiControllerIntegrationTests {
 	}
 
     /**
-     * Checking if status OK when we GET from Object Property
-     * Also checks that Last-Modified Header is present
+	 * Method checks if status is OK, when we GET from Object Property. It also checks that Last-Modified Header is present.
+	 * @see DeviceRepository
+	 * @see Device
+	 * @see ObjectsApiController
      */
     @Test
     public void getObjectPropertyCheckGetStatusOK() throws Exception{
@@ -74,11 +85,14 @@ public class ObjectsApiControllerIntegrationTests {
 				.andDo(print());
 	}
 
-    /**
-     * Checking if status OK when we GET from Object Property
-     * Also checks that Last-Modified Header is not present when state is null
-     */
-    @Test
+	/**
+	 * Method test if Object property returns expected result when state is NULL.
+	 * @throws Exception
+	 * @see Device
+	 * @see DeviceRepository
+	 * @see ObjectsApiController
+	 */
+	@Test
     public void getObjectPropertyReturnsExpectedResultWhenStateIsNullTest() throws Exception{
         Device fakeDevice = new Device(
                 "Fake Device",
@@ -98,10 +112,13 @@ public class ObjectsApiControllerIntegrationTests {
                 .andDo(print());
     }
 
-    /**
-     * Checking if Status NOT FOUND when we GET with wrong UUID from Object Property
-     */
-    @Test
+
+	/**
+	 * Method checks if Status NOT FOUND when we GET with wrong UUID from Object Property
+	 * @throws Exception
+	 * @see ObjectsApiController
+	 */
+	@Test
 	public void checkGetStatusNOT_FOUND() throws Exception{
 		mockMvc.perform(get("/objects/{uuid}/properties/state", UUID.randomUUID()))
 				.andExpect(status().isNotFound())
@@ -109,8 +126,11 @@ public class ObjectsApiControllerIntegrationTests {
 	}
 
     /**
-     *
+     * Method checks if Status NOT FOUND when we GET with wrong property ID (pid) from Object Property
      * @throws Exception
+	 * @see DeviceRepository
+	 * @see Device
+	 * @see ObjectsApiController
      */
     @Test
     public void checkGetStatusNOT_FOUNDWhenInvalidPid() throws Exception{

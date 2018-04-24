@@ -1,0 +1,9 @@
+com.tinymesh.vicinity.adapter
+com.tinymesh.vicinity.adapter.bootstrap
+com.tinymesh.vicinity.adapter.client
+com.tinymesh.vicinity.adapter.configuration
+com.tinymesh.vicinity.adapter.controller
+com.tinymesh.vicinity.adapter.entity
+com.tinymesh.vicinity.adapter.model
+com.tinymesh.vicinity.adapter.model.streamingModels
+com.tinymesh.vicinity.adapter.repository

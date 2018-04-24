@@ -47,11 +47,8 @@ public class TinyMStreamClientTest {
 
     /**
      * If bufferReader is null, then it is not created.
-     *
      * If bufferReader is not null, it is open and it needs to be closed!
-     *
      * @throws IOException
-
      */
     @After
     public void teardown() throws IOException {
@@ -63,12 +60,12 @@ public class TinyMStreamClientTest {
 
     /**
      * Testing device.
-     *
      * Is device State TRUE?
-     *
      * Is device has different dateTime than actual dateTime?
-     *
      * Here device data in singleMessageJsonTest.json file being tested!
+     * @see Device
+     * @see DeviceRepository
+     * @see TinyMStreamClient
      */
     @Test
     public void testUpdateDeviceStat() {

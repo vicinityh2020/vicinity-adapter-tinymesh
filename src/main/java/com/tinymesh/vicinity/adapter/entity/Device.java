@@ -188,7 +188,7 @@ public class Device {
     ", uuid =" + uuid +
     ", Date=" + dateTime +
     ", State=" + state +
-    ", URL=" + url + "]";
+    ", URL=" + url + "]"
      */
     public String toString() {
         return "Device [DeviceType=" + deviceType +
