@@ -31,7 +31,7 @@ public class ProtoTm {
     @JsonProperty("hw")
     private String hw;
     @JsonProperty("uid")
-    private Integer uid;
+    private Long uid;
     @JsonProperty("fw")
     private String fw;
     @JsonProperty("volt")
@@ -133,11 +133,11 @@ public class ProtoTm {
         this.hw = hw;
     }
 
-    public Integer getUid() {
+    public Long getUid() {
         return uid;
     }
 
-    public void setUid(Integer uid) {
+    public void setUid(Long uid) {
         this.uid = uid;
     }
 

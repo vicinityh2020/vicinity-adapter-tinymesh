@@ -6,15 +6,21 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Optional;
+
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.spy;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -22,10 +28,9 @@ public class TinyMStreamClientTest {
 
     private BufferedReader bufferedReader;
     private String jsonTestObject;
-
     /**
      * {@link DeviceRepository}
-     *
+     * <p>
      * {@link TinyMStreamClient}
      */
     @Autowired
@@ -48,6 +53,7 @@ public class TinyMStreamClientTest {
     /**
      * If bufferReader is null, then it is not created.
      * If bufferReader is not null, it is open and it needs to be closed!
+     *
      * @throws IOException
      */
     @After
@@ -63,6 +69,7 @@ public class TinyMStreamClientTest {
      * Is device State TRUE?
      * Is device has different dateTime than actual dateTime?
      * Here device data in singleMessageJsonTest.json file being tested!
+     *
      * @see Device
      * @see DeviceRepository
      * @see TinyMStreamClient
@@ -76,7 +83,26 @@ public class TinyMStreamClientTest {
 
         tinyMStreamClient.updateDeviceState(jsonTestObject);
 
-        assertTrue(deviceRepository.findByTinyMuid(839188480).isState());
-        assertNotEquals(deviceRepository.findByTinyMuid(839188480).getDateTime().toString(), "2018-04-18T08:47:40.979Z" );
+        dev = deviceRepository.findByTinyMuid(839188480);
+        assertTrue(dev.isState());
+        assertNotEquals(dev.getDateTime().toString(), "2018-04-18T08:47:40.979Z");
+    }
+
+    /**
+     * Tests if client will resync with cloud upon getting event from unknown device.
+     */
+    @Test
+    public void testDeviceResync() {
+        // delete device so that it appears as unknown
+        Device dev = deviceRepository.findByTinyMuid(839188480);
+        deviceRepository.deleteById(dev.getUuid());
+
+        // insert client spy to verify that resync happened
+        TinyMClient client = (TinyMClient) ReflectionTestUtils.getField(tinyMStreamClient, "tinyMClient");
+        TinyMClient spyClient = spy(client);
+        ReflectionTestUtils.setField(tinyMStreamClient, "tinyMClient", spyClient);
+
+        tinyMStreamClient.updateDeviceState(jsonTestObject);
+        Mockito.verify(spyClient, atLeastOnce()).syncDevices();
     }
 }
