@@ -11,6 +11,9 @@ public class LinkInfo   {
     @JsonProperty("mediaType")
     private String mediaType = null;
 
+    @JsonProperty("output")
+    public EmptyPOJO output;
+
     public LinkInfo href(String href) {
         this.href = href;
         return this;

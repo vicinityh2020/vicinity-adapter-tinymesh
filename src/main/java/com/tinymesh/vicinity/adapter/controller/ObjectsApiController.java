@@ -1,5 +1,12 @@
 package com.tinymesh.vicinity.adapter.controller;
 
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.tinymesh.vicinity.adapter.entity.Device;
 import com.tinymesh.vicinity.adapter.entity.DeviceUtilization;
 import com.tinymesh.vicinity.adapter.model.*;
@@ -10,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -61,7 +69,7 @@ public class ObjectsApiController {
             prop.setWritable(false);
             prop.setMonitors("occupancy");
             prop.addReadLinksItem(linkInfo);
-            prop.setWriteLinks(new ArrayList<>());
+//            prop.setWriteLinks();
             prop.setOutput(outputSchema);
             objectProperties.add(prop);
 
@@ -93,22 +101,21 @@ public class ObjectsApiController {
 
             objectInfo.setOid(device.getUuid());
             objectInfo.setName(device.getDeviceName());
-            objectInfo.setType(device.getDeviceType());
+            objectInfo.setType("CO2Sensor");
             objectInfo.setActions(new ArrayList<>());
             objectInfo.setEvents(new ArrayList<>());
 
             LinkInfo linkInfo = new LinkInfo();
-            linkInfo.setHref("/objects/" + device.getUuid() + "/properties/status");
+            linkInfo.setHref("/objects/" + device.getUuid() + "/properties/state");
             linkInfo.setMediaType("application/json");
             OutputSchema outputSchema = new OutputSchema();
             outputSchema.setDatatype("boolean");
             outputSchema.setUnits("occupancy");
             ObjectProperty prop = new ObjectProperty();
             prop.setPid("state");
-            prop.setWritable(false);
-            prop.setMonitors("occupancy");
+            prop.setMonitors("Motion");
             prop.addReadLinksItem(linkInfo);
-            prop.setWriteLinks(new ArrayList<>());
+//            prop.setWriteLinks(new LinkInfo());
             prop.setOutput(outputSchema);
             objectProperties.add(prop);
 
@@ -116,7 +123,6 @@ public class ObjectsApiController {
 
             items.add(objectInfo);
         }
-
         return items;
     }
 
