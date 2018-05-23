@@ -78,7 +78,10 @@ public class TinyMStreamClient {
         map.put("continuous", singletonList("true"));
         map.put("stream", singletonList("true"));
 
-        UriComponents uri = UriComponentsBuilder.fromUriString("/v2/messages/{networkID}").queryParams(map).buildAndExpand(networkID);
+        UriComponents uri = UriComponentsBuilder
+                .fromUriString("/v2/messages/{networkID}")
+                .queryParams(map)
+                .buildAndExpand(networkID);
 
         Flux<String> result = webClient.get()
                 .uri(uri.toString())
@@ -106,6 +109,7 @@ public class TinyMStreamClient {
     public void updateDeviceState(String deviceProps) {
         DoorSensor door = null;
         try {
+            System.out.println(deviceProps);
             door = objectMapper.readValue(deviceProps, DoorSensor.class);
         } catch (IOException e) {
             return;

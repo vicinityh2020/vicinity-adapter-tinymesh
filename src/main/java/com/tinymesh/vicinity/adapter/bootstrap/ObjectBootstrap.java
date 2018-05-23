@@ -5,6 +5,7 @@ import com.tinymesh.vicinity.adapter.entity.Device;
 import com.tinymesh.vicinity.adapter.repository.DeviceRepository;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,6 +23,10 @@ public class ObjectBootstrap implements ApplicationListener<ContextRefreshedEven
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         List<Device> devices = tinyMClient.syncDevices();
-        this.deviceRepository.saveAll(devices);
+        try {
+            this.deviceRepository.saveAll(devices);
+        } catch (DataIntegrityViolationException e) { // catches exception in case we already have the data
+
+        }
     }
 }

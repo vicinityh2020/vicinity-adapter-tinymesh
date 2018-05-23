@@ -30,7 +30,7 @@ public class Device {
     private LocalDateTime dateTime;
     @Column(name = "url")
     private String url;
-    @Column(name = "tinymuid", nullable = false)
+    @Column(name = "tinymuid", nullable = false, unique = true)
     private long tinyMuid;
 
     /**
