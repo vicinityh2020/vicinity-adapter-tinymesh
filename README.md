@@ -44,8 +44,8 @@ Java home: /usr/local/java-current/jdk1.8.0_75/jre
 Now you need to set Tinymesh cloud variables for connection on your environment. 
 
 * `TINYM_NETWORK_ID=<network id provided by Tiny Mesh>`
-* `TINYM_CLOUD_EMAIL=<YOUR_TINYM_E-MAILprovided by Tiny Mesh>`
-* `TINYM_CLOUD_PASS=<YOUR_TINYM_PASSWORD provided by Tiny Mesh>`
+* `TINYM_CLOUD_EMAIL=<Email for your account Tiny Mesh>`
+* `TINYM_CLOUD_PASS=<Password for your account at Tiny Mesh>`
 
 You need to set variables for your database. This variables should match the variables you use on your adapter for connection.
 
@@ -68,5 +68,5 @@ We have implemented endpoints in our adapter to read information about devices. 
 * GET /objects
     - Returns all devices registered at the adapter and thing description of devices
 * GET /objects/{oid}/properties/{pid}
-    -Returns last known value and time the value was received by the device. “oid” is UUID of device and “pid” is a 
+    - Returns last known value and time the value was received by the device. “oid” is UUID of device and “pid” is a 
     property identifier.
