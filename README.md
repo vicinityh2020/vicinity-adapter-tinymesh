@@ -15,6 +15,7 @@ Download the source code from the repository:
 git clone git@github.com:vicinityh2020/vicinity-adapter-tinymesh.git
 ```
 
+### Configuration of Enviroment
 You need to set following environment variables to run the adapter.
 To let Maven work everywhere you need to export following environmental variables:
 
@@ -41,7 +42,7 @@ Java version: 1.8.0_75, vendor: Oracle Corporation
 Java home: /usr/local/java-current/jdk1.8.0_75/jre
 ```
 
-Now you need to set Tinymesh cloud variables for connection on your environment. 
+Now you need to set Tiny Mesh cloud variables for connection on your environment. 
 
 * `TINYM_NETWORK_ID=<network id provided by Tiny Mesh>`
 * `TINYM_CLOUD_EMAIL=<Email for your account Tiny Mesh>`
@@ -60,6 +61,21 @@ Following are the variables you should use on your machine.
 * `PGLOCALEDIR=/home/opt/PostgreSQL/9.5/share/locale`
 * `MANPATH=$MANPATH:/home/opt/PostgreSQL/9.5/share/man`
 
+### Compilation and running the adapter
+To compile when in the root folder of the project:
+```
+mvn clean install
+```
+
+In case compilation fails due to failing tests - it is possible to ignore tests running:
+```
+mvn clean install -DskipTests
+```
+
+To run the adapter use the .jar from `./target` directory.
+```
+java -jar adapter-0.0.1-SNAPSHOT.jar
+```
 
 # Endpoints
 
