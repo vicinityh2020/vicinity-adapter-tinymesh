@@ -77,7 +77,7 @@ To run the adapter use the .jar from `./target` directory.
 java -jar adapter-0.0.1-SNAPSHOT.jar
 ```
 
-# Endpoints
+# Endpoints and API
 
 We have implemented endpoints in our adapter to read information about devices. These endpoints are:
 
@@ -86,3 +86,7 @@ We have implemented endpoints in our adapter to read information about devices. 
 * GET /objects/{oid}/properties/{pid}
     - Returns last known value and time the value was received by the device. “oid” is UUID of device and “pid” is a 
     property identifier.
+    
+Adapter also supports publishing of the events. Events are configured statically in the agent config,
+assumption is that all events published follow following patter for their `eid` - `door_activity_<id of device pubblishing the event>`.
+The id in this case is a UUID generated when the device was registered in the adapter.

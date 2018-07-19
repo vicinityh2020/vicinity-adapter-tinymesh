@@ -48,7 +48,7 @@ public class ObjectsApiControllerTest {
         for (int i = 0; i < maxPositiveTests; i++) {
             UUID uuid = UUID.randomUUID();
             Device device = new Device("MockTestDevice" + String.valueOf(i), "MockType" + String.valueOf(i),
-                    uuid, LocalDateTime.now(), states[i], "www.mockurl.com", i);
+                    uuid, LocalDateTime.now(), states[i], "www.mockurl.com", i, "asd");
 
             mockDevices.add(device);
 

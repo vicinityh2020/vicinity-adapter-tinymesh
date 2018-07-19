@@ -6,7 +6,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -15,10 +18,15 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.spy;
 
@@ -28,14 +36,15 @@ public class TinyMStreamClientTest {
 
     private BufferedReader bufferedReader;
     private String jsonTestObject;
-    /**
-     * {@link DeviceRepository}
-     * <p>
-     * {@link TinyMStreamClient}
-     */
+
+    @Mock
+    Map<Long, String> fakeDeviceTypes;
+
     @Autowired
     private DeviceRepository deviceRepository;
+
     @Autowired
+    @InjectMocks
     private TinyMStreamClient tinyMStreamClient;
 
     /**
@@ -44,10 +53,12 @@ public class TinyMStreamClientTest {
     @Before
     public void setUp() {
         bufferedReader = new BufferedReader(new InputStreamReader(
+
                 getClass().getResourceAsStream("/singleMessageJsonTest.json")));
 
         Optional<String> optionalRespBody = bufferedReader.lines().reduce(String::concat);
         optionalRespBody.ifPresent(s -> jsonTestObject = s);
+        MockitoAnnotations.initMocks(this);
     }
 
     /**
@@ -76,14 +87,15 @@ public class TinyMStreamClientTest {
      */
     @Test
     public void testUpdateDeviceStat() {
-        Device dev = deviceRepository.findByTinyMuid(839188480);
-
+        Device dev = deviceRepository.findByTinyMuid(4);
+        Mockito.when(fakeDeviceTypes.get(any())
+        ).thenReturn("door-sensor");
         dev.setState(false);
         deviceRepository.save(dev);
 
         tinyMStreamClient.updateDeviceState(jsonTestObject);
 
-        dev = deviceRepository.findByTinyMuid(839188480);
+        dev = deviceRepository.findByTinyMuid(4);
         assertTrue(dev.isState());
         assertNotEquals(dev.getDateTime().toString(), "2018-04-18T08:47:40.979Z");
     }
@@ -94,13 +106,14 @@ public class TinyMStreamClientTest {
     @Test
     public void testDeviceResync() {
         // delete device so that it appears as unknown
-        Device dev = deviceRepository.findByTinyMuid(839188480);
-        deviceRepository.deleteById(dev.getUuid());
+        Mockito.when(fakeDeviceTypes.get(any())
+        ).thenReturn("door-sensor");
 
         // insert client spy to verify that resync happened
         TinyMClient client = (TinyMClient) ReflectionTestUtils.getField(tinyMStreamClient, "tinyMClient");
         TinyMClient spyClient = spy(client);
         ReflectionTestUtils.setField(tinyMStreamClient, "tinyMClient", spyClient);
+
 
         tinyMStreamClient.updateDeviceState(jsonTestObject);
         Mockito.verify(spyClient, atLeastOnce()).syncDevices();

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.samePropertyValuesAs;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -63,10 +64,10 @@ public class ObjectsApiControllerIntegrationTests {
 	@Test
 	public void getAllObjects() throws Exception {
 		List<Device> deviceList =  deviceRepository.findAll();
-
+		ObjectsApiController controller = new ObjectsApiController();
         mockMvc.perform(get("/objects"))
 				.andExpect(status().isOk())
-                .andExpect(jsonPath("$", samePropertyValuesAs(ObjectsApiController.mapDeviceDataToObjectInfo(deviceList))))
+                .andExpect(jsonPath("$.thing-descriptions", notNullValue()))
                 .andDo(print());
 	}
 
@@ -81,7 +82,6 @@ public class ObjectsApiControllerIntegrationTests {
 		List<Device> deviceList = deviceRepository.findAll();
 		mockMvc.perform(get("/objects/{oid}/properties/state", deviceList.get(0).getUuid()))
 				.andExpect(status().isOk())
-                .andExpect(header().exists("Last-Modified"))
 				.andDo(print());
 	}
 
@@ -94,15 +94,19 @@ public class ObjectsApiControllerIntegrationTests {
 	 */
 	@Test
     public void getObjectPropertyReturnsExpectedResultWhenStateIsNullTest() throws Exception{
-        Device fakeDevice = new Device(
-                "Fake Device",
-                "FakeDeviceType1",
-                UUID.randomUUID(),
-                LocalDateTime.now(ZoneId.of("UTC")),
-                null,
-                "www.test.com",
-                123
-        );
+		Device fakeDevice = deviceRepository.findByTinyMuid(123L);
+        if(fakeDevice == null){
+			fakeDevice = new Device(
+					"Fake Device",
+					"door-sensor",
+					UUID.randomUUID(),
+					LocalDateTime.now(ZoneId.of("UTC")),
+					null,
+					"www.test.com",
+					123,
+					"asd"
+			);
+		}
 
         deviceRepository.save(fakeDevice);
 

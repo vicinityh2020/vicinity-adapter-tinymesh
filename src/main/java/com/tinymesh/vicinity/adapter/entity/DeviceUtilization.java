@@ -1,5 +1,6 @@
 package com.tinymesh.vicinity.adapter.entity;
 
+
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -11,8 +12,14 @@ import java.util.UUID;
 @Table(name = "deviceutilization")
 public class DeviceUtilization {
 
+    //    @Id
+//    @GeneratedValue(generator = "system-uui")
+//    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    /*(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")*/
     @Id
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    @GeneratedValue
+    @Column(name = "uuid", unique = true)
     private UUID uuid;
 
     private LocalDateTime opened;
@@ -20,19 +27,20 @@ public class DeviceUtilization {
     private int utilization;
 
 
-    private UUID deviceUUID;
+    @ManyToOne(targetEntity = Device.class)
+    private Device deviceUUID;
 
     /**
-     *
-     * @param uuid unique ID of DeviceUtil
-     * @param opened when Door is opened
-     * @param closed when door is closed
+     * @param uuid        unique ID of DeviceUtil
+     * @param opened      when Door is opened
+     * @param closed      when door is closed
      * @param utilization utilization of Device
-     * @param deviceUUID unique ID of Device
+     * @param deviceUUID  unique ID of Device
      * @see Device
      */
-    public DeviceUtilization(UUID uuid, LocalDateTime opened, LocalDateTime closed, int utilization, UUID deviceUUID) {
-        this.uuid = uuid;
+    //UUID uuid,
+    public DeviceUtilization(LocalDateTime opened, LocalDateTime closed, int utilization, Device deviceUUID) {
+//        this.uuid = uuid;
         this.opened = opened;
         this.closed = closed;
         this.utilization = utilization;
@@ -48,6 +56,7 @@ public class DeviceUtilization {
 
     /**
      * Gets UUID
+     *
      * @return uuid
      */
     public UUID getUuid() {
@@ -56,6 +65,7 @@ public class DeviceUtilization {
 
     /**
      * Sets UUID
+     *
      * @param uuid unique ID of DeviceUtil
      */
     public void setUuid(UUID uuid) {
@@ -64,6 +74,7 @@ public class DeviceUtilization {
 
     /**
      * Gets date and time door was opened
+     *
      * @return opened
      */
     public LocalDateTime getOpened() {
@@ -72,6 +83,7 @@ public class DeviceUtilization {
 
     /**
      * Sets date and time door was opened
+     *
      * @param opened when Door is opened
      */
     public void setOpened(LocalDateTime opened) {
@@ -80,6 +92,7 @@ public class DeviceUtilization {
 
     /**
      * Gets date and time door was closed
+     *
      * @return closed
      */
     public LocalDateTime getClosed() {
@@ -88,6 +101,7 @@ public class DeviceUtilization {
 
     /**
      * Sets date and time door was closed
+     *
      * @param closed when door is closed
      */
     public void setClosed(LocalDateTime closed) {
@@ -96,6 +110,7 @@ public class DeviceUtilization {
 
     /**
      * Gets utilization
+     *
      * @return utilization
      */
     public int getUtilization() {
@@ -104,6 +119,7 @@ public class DeviceUtilization {
 
     /**
      * Sets utilization
+     *
      * @param utilization utilization of Device
      */
     public void setUtilization(int utilization) {
@@ -112,22 +128,23 @@ public class DeviceUtilization {
 
     /**
      * Gets UUID of Device
+     *
      * @return deviceUUID
      */
-    public UUID getDeviceUUID() {
+    public Device getDeviceUUID() {
         return deviceUUID;
     }
 
     /**
      * Sets UUID of Device
+     *
      * @param deviceUUID unique ID of Device
      */
-    public void setDeviceUUID(UUID deviceUUID) {
+    public void setDeviceUUID(Device deviceUUID) {
         this.deviceUUID = deviceUUID;
     }
 
     /**
-     *
      * @return "Device [UUID =" + uuid + ", opened =" + opened + ",
      * closed =" + closed + ", utilization =" + utilization + ",
      * Device UUID =" + deviceUUID + "]"

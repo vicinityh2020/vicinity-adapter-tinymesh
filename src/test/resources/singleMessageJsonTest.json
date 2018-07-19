@@ -2,7 +2,7 @@
   "received": "2018-04-18T08:47:40.981Z",
   "proto/tm": {
     "volt": 3.09,
-    "uid": 839188480,
+    "uid": 10,
     "type": "event",
     "temp": 29,
     "sid": 16777226,
@@ -24,7 +24,7 @@
       "gpio_1": 0,
       "gpio_0": 0
     },
-    "detail": "ima",
+    "detail": "io_change",
     "data": 571,
     "aio1": 1829,
     "aio0": 3

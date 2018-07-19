@@ -4,9 +4,11 @@ package com.tinymesh.vicinity.adapter.model.streamingModels;
  * Created by JacksonGenerator on 4/13/18.
  */
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ProtoTm {
     @JsonProperty("temp")
     private Integer temp;

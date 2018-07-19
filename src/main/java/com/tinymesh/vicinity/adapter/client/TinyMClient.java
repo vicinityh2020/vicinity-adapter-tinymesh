@@ -2,7 +2,6 @@ package com.tinymesh.vicinity.adapter.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.javafx.fxml.builder.URLBuilder;
 import com.tinymesh.vicinity.adapter.entity.Device;
 import com.tinymesh.vicinity.adapter.model.DoorSensorJSON;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.Nullable;
@@ -34,13 +32,10 @@ public class TinyMClient {
 
     @Value("${tinymesh.client.email}")
     private String email;
-
     @Value("${tinymesh.client.pass}")
     private String pass;
-
     @Value("${tinymesh.client.base_url}")
     private String baseURL;
-
     @Value("${tinymesh.networkID}")
     private String networkID;
 
@@ -61,21 +56,25 @@ public class TinyMClient {
 
         //filter out devices that are not provisioned as per description in T330
         //and creates Device objects suitable for DB
-        devices.stream().filter(device -> device.getProvisioned().equals("active")).forEach(device -> {
-            final String deviceURL = String.format("%s/%s/%s/%s",
-                    baseURL, endpointDevice,
-                    device.getNetwork(),
-                    device.getKey());
+        devices.stream().filter(device -> device.getType().equals("door-sensor") //&&
+                            /*!device.getType().equals("gateway") &&
+                            !device.getType().contains("building-sensor")*/)
+                        .forEach(device -> {
+                            final String deviceURL = String.format("%s/%s/%s/%s",
+                                    baseURL, endpointDevice,
+                                    device.getNetwork(),
+                                    device.getKey());
 
-            deviceObjects.add(new Device(
-                    device.getName(),
-                    device.getType(),
-                    UUID.randomUUID(),
-                    // save time in utc to avoid any errors caused by time zone mismatch
-                    LocalDateTime.now(ZoneId.of("UTC")),
-                    true, deviceURL,
-                    device.getAddress()));
-        });
+                            deviceObjects.add(new Device(
+                                    device.getName(),
+                                    device.getType(),
+                                    UUID.randomUUID(),
+                                    // save time in utc to avoid any errors caused by time zone mismatch
+                                    LocalDateTime.now(ZoneId.of("UTC")),
+                                    true, deviceURL,
+                                    device.getAddress(),
+                                    device.getKey()));
+                        });
         return deviceObjects;
     }
 

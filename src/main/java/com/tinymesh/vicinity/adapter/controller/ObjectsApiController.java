@@ -5,12 +5,15 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.tinymesh.vicinity.adapter.entity.Device;
 import com.tinymesh.vicinity.adapter.entity.DeviceUtilization;
 import com.tinymesh.vicinity.adapter.model.*;
 import com.tinymesh.vicinity.adapter.repository.DeviceRepository;
+import com.tinymesh.vicinity.adapter.serializers.ThingDescription;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,11 +33,16 @@ import java.util.*;
  */
 @RestController
 public class ObjectsApiController {
-
+    @Autowired
     private DeviceRepository deviceRepository;
 
+    @Autowired
+    private ObjectMapper mapper;
     public ObjectsApiController(DeviceRepository deviceRepository) {
         this.deviceRepository = deviceRepository;
+    }
+
+    public ObjectsApiController() {
     }
 
     /**
@@ -44,42 +52,6 @@ public class ObjectsApiController {
      * @param deviceUtilizationList list to be converted
      * @return returns a new list of objects suitable for JSON display
      */
-    public static List<ObjectInfo> mapDeviceUtilDataToObjectInfo(List<DeviceUtilization> deviceUtilizationList) {
-        List<ObjectInfo> items = new ArrayList<>();
-
-        for (DeviceUtilization deviceUtil : deviceUtilizationList) {
-            ObjectInfo objectInfo = new ObjectInfo();
-
-            List<ObjectProperty> objectProperties = new ArrayList<>();
-
-            objectInfo.setOid(deviceUtil.getUuid());
-            objectInfo.setName(null);
-            objectInfo.setType(null);
-            objectInfo.setActions(new ArrayList<>());
-            objectInfo.setEvents(new ArrayList<>());
-
-            LinkInfo linkInfo = new LinkInfo();
-            linkInfo.setHref("properties/state");
-            linkInfo.setMediaType("application/json");
-            OutputSchema outputSchema = new OutputSchema();
-            outputSchema.setDatatype("boolean");
-            outputSchema.setUnits("occupancy");
-            ObjectProperty prop = new ObjectProperty();
-            prop.setPid("state");
-            prop.setWritable(false);
-            prop.setMonitors("occupancy");
-            prop.addReadLinksItem(linkInfo);
-//            prop.setWriteLinks();
-            prop.setOutput(outputSchema);
-            objectProperties.add(prop);
-
-            objectInfo.properties(objectProperties);
-
-            items.add(objectInfo);
-        }
-
-        return items;
-    }
 
     /**
      * Helper method which translates a given list of devices (DB entity) {@link Device}
@@ -91,17 +63,15 @@ public class ObjectsApiController {
      * @see LinkInfo
      * @see OutputSchema
      */
-    public static List<ObjectInfo> mapDeviceDataToObjectInfo(List<Device> deviceList) {
+    public List<ObjectInfo> mapDeviceDataToObjectInfo(List<Device> deviceList) {
         List<ObjectInfo> items = new ArrayList<>();
 
         for (Device device : deviceList) {
             ObjectInfo objectInfo = new ObjectInfo();
-
             List<ObjectProperty> objectProperties = new ArrayList<>();
-
             objectInfo.setOid(device.getUuid());
             objectInfo.setName(device.getDeviceName());
-            objectInfo.setType("CO2Sensor");
+            objectInfo.setType("adap:DoorSensor");
             objectInfo.setActions(new ArrayList<>());
             objectInfo.setEvents(new ArrayList<>());
 
@@ -113,9 +83,8 @@ public class ObjectsApiController {
             outputSchema.setUnits("occupancy");
             ObjectProperty prop = new ObjectProperty();
             prop.setPid("state");
-            prop.setMonitors("Motion");
+            prop.setMonitors("adap:EntryExit");
             prop.addReadLinksItem(linkInfo);
-//            prop.setWriteLinks(new LinkInfo());
             prop.setOutput(outputSchema);
             objectProperties.add(prop);
 
@@ -126,6 +95,17 @@ public class ObjectsApiController {
         return items;
     }
 
+    public JsonNode mapDeviceDataToObjectInfo2(List<Device> deviceList) {
+        ArrayNode items = mapper.createArrayNode();
+        ThingDescription td = new ThingDescription(mapper);
+        for (Device device : deviceList) {
+            ObjectNode on = td.getThingDescFromDevice(device);
+            items.add(on);
+        }
+        JsonNode res = td.getThingDescWrapper();
+        ((ObjectNode) res).set("thing-descriptions", items);
+        return res;
+    }
 
     /**
      * Endpoint; Fetches a list of all {@link ObjectInfo} objects from the TinyMesh cloud.
@@ -136,16 +116,16 @@ public class ObjectsApiController {
      * @see ResponseEntity
      */
     @RequestMapping(value = "/objects", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<List<ObjectInfo>> getObjects() {
+    public ResponseEntity<JsonNode> getObjects() {
 
-        List<ObjectInfo> objectList;
+        JsonNode objectList;
         List<Device> deviceList = deviceRepository.findAll();
 
         if (deviceList.isEmpty()) {
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>((JsonNode) mapper.createObjectNode(), HttpStatus.NOT_FOUND);
         }
 
-        objectList = mapDeviceDataToObjectInfo(deviceList);
+        objectList = this.mapDeviceDataToObjectInfo2(deviceList);
         return new ResponseEntity<>(objectList, HttpStatus.OK);
     }
 

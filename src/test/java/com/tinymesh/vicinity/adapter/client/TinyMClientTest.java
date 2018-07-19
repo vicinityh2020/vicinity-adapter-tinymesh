@@ -74,7 +74,7 @@ public class TinyMClientTest {
         List<DoorSensorJSON> listOfObjects = client.requestDevices();
         assertNotNull(listOfObjects);
         assertTrue(listOfObjects.size() > 0);
-        assertEquals(listOfObjects.size(), 17);
+        assertEquals(18, listOfObjects.size());
     }
 
     @Test
@@ -120,7 +120,7 @@ public class TinyMClientTest {
                 Mockito.<Class<String>>any())
         ).thenReturn(testEntity);
 
-        int expectedNumberOfDevices = 16;
+        int expectedNumberOfDevices = 1;
         List<Device> deviceList = client.syncDevices();
         assertNotNull(deviceList);
         assertTrue("Returned list of devices should not be empty", deviceList.size() > 0);

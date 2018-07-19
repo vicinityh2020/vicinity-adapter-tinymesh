@@ -15,8 +15,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "device")
 public class Device {
-
-
     private Boolean state;
     @Id
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
@@ -32,7 +30,8 @@ public class Device {
     private String url;
     @Column(name = "tinymuid", nullable = false, unique = true)
     private long tinyMuid;
-
+    @Column(name = "eventkey", unique = true)
+    private String eventKey;
     /**
      * @param deviceName name of Device.
      * @param deviceType type of Device. for example: "sensor".
@@ -42,7 +41,14 @@ public class Device {
      * @param url URL address of Device.
      * @param tinyMuid ID we get from TinyMesh Cloud.
      */
-    public Device(String deviceName, String deviceType, UUID uuid, LocalDateTime dateTime, Boolean state, String url, long tinyMuid) {
+    public Device(String deviceName,
+                  String deviceType,
+                  UUID uuid,
+                  LocalDateTime dateTime,
+                  Boolean state,
+                  String url,
+                  long tinyMuid,
+                  String eventKey) {
         this.deviceName = deviceName;
         this.uuid = uuid;
         this.dateTime = dateTime;
@@ -50,6 +56,7 @@ public class Device {
         this.state = state;
         this.url = url;
         this.tinyMuid = tinyMuid;
+        this.eventKey = eventKey;
     }
 
     /**
@@ -176,7 +183,6 @@ public class Device {
      * @param lastUpdateDateTime Last updated Date and Time of Device.
      */
     public void updateDeviceState(boolean state, String lastUpdateDateTime){
-
         LocalDateTime time = LocalDateTime.ofInstant(Instant.parse(lastUpdateDateTime), ZoneId.of("UTC"));
         this.setDateTime(time);
         this.setState(state);
