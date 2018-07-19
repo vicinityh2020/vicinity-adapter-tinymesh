@@ -1,0 +1,92 @@
+# Architecture
+The architecture of VICINITY Node is seen in the following figure. All adapter will connect to the agent. 
+In this way, VICINITY Nodes will be communicated with agent, but will continue to operate separately.
+![](./img/architecture.png)
+
+
+# Installation
+Required software: 
+* Install JDK 1.8 on your machine
+* install Postgresql 9.6.8
+* install maven
+
+Download the source code from the repository:
+```sh
+git clone git@github.com:vicinityh2020/vicinity-adapter-tinymesh.git
+```
+
+### Configuration of Enviroment
+You need to set following environment variables to run the adapter.
+To let Maven work everywhere you need to export following environmental variables:
+
+* `M2_HOME=/usr/local/apache-maven/apache-maven-3.5.3`
+* `M2=$M2_HOME/bin`
+* `MAVEN_OPTS=-Xms256m -Xmx512m`
+
+Now append the M2 variable to the system path:
+* `PATH=$M2:$PATH`
+
+Finally, verify if Maven has been added by running:
+```sh
+$ mvn -version
+```
+
+The output should be as follows:
+
+```sh
+Apache Maven 3.5.3 (7994120775791599e205a5524ec3e0dfe41d4a06; 2016-12-03T17:27:37+05:30)
+Maven home: /usr/local/apache-maven/apache-maven-3.3.9
+ 
+Java version: 1.8.0_75, vendor: Oracle Corporation
+ 
+Java home: /usr/local/java-current/jdk1.8.0_75/jre
+```
+
+Now you need to set Tiny Mesh cloud variables for connection on your environment. 
+
+* `TINYM_NETWORK_ID=<network id provided by Tiny Mesh>`
+* `TINYM_CLOUD_EMAIL=<Email for your account Tiny Mesh>`
+* `TINYM_CLOUD_PASS=<Password for your account at Tiny Mesh>`
+
+You need to set variables for your database. This variables should match the variables you use on your adapter for connection.
+
+Following are the variables you should use on your machine.
+
+* `PATH=/home/opt/PostgreSQL/9.5/bin:$PATH`
+* `PGDATA=/home/opt/PostgreSQL/9.5/data`
+* `PGDATABASE=YOUR_DB_NAME`
+* `PGUSER=USER_NAME`
+* `PGPASSWORD=USER_PASSWORD`
+* `PGPORT=YOUR_PORT`
+* `PGLOCALEDIR=/home/opt/PostgreSQL/9.5/share/locale`
+* `MANPATH=$MANPATH:/home/opt/PostgreSQL/9.5/share/man`
+
+### Compilation and running the adapter
+To compile when in the root folder of the project:
+```
+mvn clean install
+```
+
+In case compilation fails due to failing tests - it is possible to ignore tests running:
+```
+mvn clean install -DskipTests
+```
+
+To run the adapter use the .jar from `./target` directory.
+```
+java -jar adapter-0.0.1-SNAPSHOT.jar
+```
+
+# Endpoints and API
+
+We have implemented endpoints in our adapter to read information about devices. These endpoints are:
+
+* GET /objects
+    - Returns all devices registered at the adapter and thing description of devices
+* GET /objects/{oid}/properties/{pid}
+    - Returns last known value and time the value was received by the device. “oid” is UUID of device and “pid” is a 
+    property identifier.
+    
+Adapter also supports publishing of the events. Events are configured statically in the agent config,
+assumption is that all events published follow following patter for their `eid` - `door_activity_<id of device pubblishing the event>`.
+The id in this case is a UUID generated when the device was registered in the adapter.

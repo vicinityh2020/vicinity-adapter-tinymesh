@@ -2,9 +2,8 @@ package com.tinymesh.vicinity.adapter.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import org.threeten.bp.OffsetDateTime;
-import org.springframework.validation.annotation.Validated;
+
+import java.time.OffsetDateTime;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
@@ -27,7 +26,7 @@ public class PropertyValue   {
      * Can be anything: string, number, array, object, etc.
      * @return value
      **/
-    @NotNull
+
     public Object getValue() {
         return value;
     }

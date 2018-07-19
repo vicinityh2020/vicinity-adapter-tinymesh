@@ -2,8 +2,7 @@ package com.tinymesh.vicinity.adapter.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import javax.validation.Valid;
+
 import javax.validation.constraints.*;
 
 public class ObjectEvent   {

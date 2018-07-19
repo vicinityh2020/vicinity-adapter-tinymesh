@@ -9,8 +9,5 @@
         <module name="adapter" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="adapter" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

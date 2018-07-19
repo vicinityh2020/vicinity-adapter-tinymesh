@@ -2,10 +2,6 @@ package com.tinymesh.vicinity.adapter.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
 
 
 public class LinkInfo   {
@@ -14,6 +10,9 @@ public class LinkInfo   {
 
     @JsonProperty("mediaType")
     private String mediaType = null;
+
+    @JsonProperty("output")
+    public EmptyPOJO output;
 
     public LinkInfo href(String href) {
         this.href = href;
