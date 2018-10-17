@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.tinymesh.vicinity.adapter.entity.Device;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -76,7 +78,7 @@ public class ThingDescription {
         return jn;
     }
 
-    public JsonNode getThingDescWrapper(){
-        return mapper.createObjectNode().put("adapter-id", "1").set("thing-descriptions", mapper.createArrayNode());
+    public JsonNode getThingDescWrapper(String adapterID){
+        return mapper.createObjectNode().put("adapter-id", adapterID).set("thing-descriptions", mapper.createArrayNode());
     }
 }

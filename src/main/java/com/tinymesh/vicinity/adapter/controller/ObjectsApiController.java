@@ -14,6 +14,7 @@ import com.tinymesh.vicinity.adapter.model.*;
 import com.tinymesh.vicinity.adapter.repository.DeviceRepository;
 import com.tinymesh.vicinity.adapter.serializers.ThingDescription;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,9 @@ import java.util.*;
 public class ObjectsApiController {
     @Autowired
     private DeviceRepository deviceRepository;
+
+    @Value("${tinymesh.adapter.id}")
+    private String adapterID;
 
     @Autowired
     private ObjectMapper mapper;
@@ -102,7 +106,7 @@ public class ObjectsApiController {
             ObjectNode on = td.getThingDescFromDevice(device);
             items.add(on);
         }
-        JsonNode res = td.getThingDescWrapper();
+        JsonNode res = td.getThingDescWrapper(adapterID);
         ((ObjectNode) res).set("thing-descriptions", items);
         return res;
     }
